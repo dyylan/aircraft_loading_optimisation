@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Aircraft Loading Optimisation</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
+    </head>
+<body>
+    <h1>Airbus Quantum Computing Challenge</h1>
+    <form action="/" method="POST">
+        <fieldset>
+            <legend><b>Add a cargo block</b></legend>
+            {{ form.csrf_token }}
+            {{ form.mass.label }} {{ form.mass(size=12) }} <br>
+            {{ form.blocksize.label }} {{ form.blocksize }} <br>
+            {{ form.submit }}            
+        </fieldset>
+    </form>
+    <form action="/" method="POST">
+        <fieldset>
+            <legend><b>Remove a cargo block</b></legend>
+            {{ remove_form.csrf_token }}
+            {{ remove_form.block_name.label }} {{ remove_form.block_name(size=12) }} <br>
+            {{ remove_form.submit }}            
+        </fieldset>
+    </form>
+    <form action="/" method="POST">
+        <fieldset>
+            <legend><b>Change fuselage parameters</b></legend>
+            {{ params_form.csrf_token }}
+            {{ params_form.fuselage_length.label }} {{ params_form.fuselage_length(size=12) }} <br>
+            {{ params_form.max_load.label }} {{ params_form.max_load(size=12) }} <br>
+            {{ params_form.submit }}            
+        </fieldset>
+    </form>    
+    {% for flashed_message in get_flashed_messages() %}
+        <div><h4>  -  {{ flashed_message }}</h4></div>
+    {% endfor %}
+    <h2>List of all available cargos</h2>
+    <div id="available-blocks" class="blocks">
+    </div>
+    <div id="solution" class="solution">
+        <h2>List of cargos in optimal solution</h2>
+        <p id="solution-parameters" class="solution-parameters"></p>
+        <div id="solution-blocks" class="blocks"> </div>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

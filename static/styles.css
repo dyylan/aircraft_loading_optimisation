@@ -1,0 +1,41 @@
+body {
+    margin: 10px 18%;
+}
+
+form {
+    margin: 18px 0px;
+}
+
+form input[type] {
+    margin: 3px;
+}
+
+.block {
+    float: left;
+    margin: 5px;
+    padding: 3px;
+    border: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+.type1 {
+    width: 100px;
+    height: 80px;    
+    background: rgba(4, 198, 247, 0.7); 
+}
+
+.type2 {
+    width: 100px;
+    height: 40px;
+    background: rgba(247, 203, 4, 0.7); 
+}
+
+.type3 {
+    width: 200px;
+    height: 80px;
+    background: rgba(4, 247, 4, 0.7); 
+}
+
+.solution {
+    padding: 10px 0px;
+    clear: both;
+}
