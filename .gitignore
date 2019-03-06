@@ -1,3 +1,4 @@
+*.env
 *.mps
 *.sol
 *.lp
