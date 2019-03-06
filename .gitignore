@@ -1,4 +1,4 @@
-*.env
+.env
 *.mps
 *.sol
 *.lp
