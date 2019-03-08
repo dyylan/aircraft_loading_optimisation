@@ -3,12 +3,20 @@ import numpy as np
 
 class Block:
     """Block class for each cargo block."""
-    def __init__(self, size, mass, short_name, long_name):
+    def __init__(self, size, mass, short_name, long_name, position=None):
         self.size = size
         self.mass = mass
         self.short_name = short_name
         self.long_name = long_name
         self.density = np.true_divide(mass, size)
+        self.position = position
+
+    def __lt__(self, other):
+        return self.position < other.position
+
+    def add_position(self, position):
+        self.position = position
+        return self
 
     def to_dict(self):
         dict_block = {'size'    : self.size,
@@ -20,14 +28,16 @@ class Block:
                       'mass'       : self.mass,
                       'density'    : self.density,
                       'short_name' : self.short_name,
-                      'long_name'  : self.long_name}
+                      'long_name'  : self.long_name,
+                      'position'   : self.position}
         return json_block
 
         
 class BlockList:
     """Block list class for the list of cargo blocks."""
-    def __init__(self, block_list):
+    def __init__(self, block_list, name_prefix='a'):
         self.block_list = block_list
+        self.name_prefix = name_prefix
         self._generate_blocks()
 
     def add_block(self, block):
@@ -37,6 +47,10 @@ class BlockList:
     def add_blocks(self, blocks):
         self.block_list.extend(blocks)
         self._generate_blocks()
+
+    def add_positions(self, positions):
+        self.positions = positions 
+        self._generate_blocks(positions)
 
     def remove_block(self, block_name):
         remove_index = [i for (i, block) in enumerate(self.blocks) if (block.long_name in block_name) or (block.short_name in block_name)]
@@ -62,6 +76,10 @@ class BlockList:
         filtered_json_blocks = [block.to_json() for block in self.blocks if block.long_name in filter_list]
         return filtered_json_blocks
 
+    def filtered_block_list(self, filter_list):
+        filtered_block_list = [tuple(block.to_dict().values()) for block in self.blocks if block.long_name in filter_list]
+        return filtered_block_list
+
     def to_dict(self, long_name=False):
         if long_name:
             dict_blocks = { block.long_name: block.to_dict() for block in self.blocks }
@@ -71,9 +89,12 @@ class BlockList:
 
     def to_json(self):
         json_blocks = [block.to_json() for block in self.blocks]
-        return json_blocks  
+        return json_blocks      
 
-    def _generate_blocks(self):
-        short_name = lambda i : f'x0{i+1}' if i<9 else f'x{i+1}'
-        long_name = lambda i : f'cargo_x0{i+1}' if i<9 else f'cargo_x{i+1}'
+    def _generate_blocks(self, positions=None):
+        short_name = lambda i : f'{self.name_prefix}0{i+1}' if i<9 else f'{self.name_prefix}{i+1}'
+        long_name = lambda i : f'cargo_{self.name_prefix}0{i+1}' if i<9 else f'cargo_{self.name_prefix}{i+1}'
         self.blocks = [Block(block[0], block[1], short_name(i), long_name(i)) for (i, block) in enumerate(self.block_list)] 
+        if positions:
+            self.blocks = [block.add_position(positions[block.long_name]) for block in self.blocks]
+            self.blocks.sort()
