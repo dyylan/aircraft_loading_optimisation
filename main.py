@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, jsonify, request, flash
+from flask import Flask, render_template, jsonify, request, flash, session
 from blocks import Block, BlockList
 from forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
 from lp import cargo_loading, cargo_ordering
@@ -24,28 +24,30 @@ harder_test_blocks = [(1.0, 500), (1.0, 600), (1.0, 400), (0.5, 500), (0.5, 500)
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 300), (0.5, 200),
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 400), (0.5, 100)]
 
-blocks = {'step_one' : BlockList([])}
-
-
 @app.route('/', methods=['GET','POST'])
 def index():
     form = CargoBlockForm()
     remove_form = RemoveCargoBlockForm()
     params_form = ChangeParamsForm()
     sample_form = UseSampleBlocks()
+    if 'step_one' not in session: 
+        session['step_one'] = BlockList([]).to_json()
     if form.errors:
         flash("Cargo block was not added.")
     if form.validate_on_submit():
         block = (float(form.blocksize.data),float(form.mass.data))
-        blocks['step_one'].add_block(block) 
+        blocks = BlockList(session['step_one'], as_json=True)
+        blocks.add_block(block) 
+        session['step_one'] = blocks.to_json()
         flash(f'Cargo block added with mass {form.mass.data}kg and size {form.blocksize.data}')
     if remove_form.validate_on_submit():
-        removal = blocks['step_one'].remove_block(str(remove_form.block_name.data))
-        print(removal)
+        blocks = BlockList(session['step_one'], as_json=True)
+        removal = blocks.remove_block(str(remove_form.block_name.data))
         if removal:
             flash(f'Removed cargo block {str(remove_form.block_name.data)} and relabelled remaining cargo blocks')
         else:
             flash(f'Cargo block {str(remove_form.block_name.data)} not found')
+        session['step_one'] = blocks.to_json()
     if params_form.validate_on_submit():
         params['fuselage_length'] = float(params_form.fuselage_length.data)            
         params['max_load'] = float(params_form.max_load.data)
@@ -53,21 +55,21 @@ def index():
         flash(f'Changed max load to {params_form.max_load.data}')
     if sample_form.validate_on_submit():
         if sample_form.sample_blocks.data:
-            blocks['step_one'] = BlockList(sample_blocks)
+            session['step_one'] = BlockList(sample_blocks).to_json()
             params['fuselage_length'] = 20
             params['max_load'] = 40000
             flash(f'Sample problem blocks loaded')
             flash(f'Changed fuselage length to {params["fuselage_length"]}')
             flash(f'Changed max load to {params["max_load"]}')
         if sample_form.simple_test_blocks.data:
-            blocks['step_one'] = BlockList(simple_test_blocks)
+            session['step_one'] = BlockList(simple_test_blocks).to_json()
             params['fuselage_length'] = 3
             params['max_load'] = 2000
             flash(f'Test blocks loaded')
             flash(f'Changed fuselage length to {params["fuselage_length"]}')
             flash(f'Changed max load to {params["max_load"]}')
         if sample_form.harder_test_blocks.data:
-            blocks['step_one'] = BlockList(harder_test_blocks)
+            session['step_one'] = BlockList(harder_test_blocks).to_json()
             params['fuselage_length'] = 7
             params['max_load'] = 5000
             flash(f'Test blocks loaded')
@@ -78,29 +80,38 @@ def index():
 
 @app.route('/step-one/blocks', methods=['GET'])
 def step_one_blocks():
-    return jsonify(blocks['step_one'].to_json())
+    if 'step_one' not in session: 
+        session['step_one'] = BlockList([]).to_json()
+    return jsonify(session['step_one'])
 
 
 @app.route('/step-one/optimisation', methods=['GET'])
 def step_one_optimisation():
-    lp_prob_response = cargo_loading(blocks['step_one'], params)
+    blocks = BlockList(session['step_one'], as_json=True)
+    lp_prob_response = cargo_loading(blocks, params)
     solution_filter = [k for k, v in lp_prob_response[1].items() if v == 1]
-    cargo_boxes_result = blocks['step_one'].filter_to_json(solution_filter)
-    blocks['step_two'] = BlockList(blocks['step_one'].filtered_block_list(solution_filter), 'b')
+    cargo_boxes_result = BlockList(session['step_one'], as_json=True).filter_to_json(solution_filter)
+    print(cargo_boxes_result)
+    blocks_two = BlockList(cargo_boxes_result, as_json=True, name_prefix='b')
+    session['step_two'] = blocks_two.to_json()
     lp_prob_response.append(cargo_boxes_result)
     return jsonify(lp_prob_response)
 
 
 @app.route('/step-two/blocks', methods=['GET'])
 def step_two_blocks():
-    return jsonify(blocks['step_two'].to_json())
+    if 'step_two' not in session: 
+        session['step_two'] = BlockList([]).to_json()
+    return jsonify(session['step_two'])
 
 
 @app.route('/step-two/optimisation', methods=['GET'])
 def step_two_optimisation():
-    lp_prob_response = cargo_ordering(blocks['step_two'], params)
-    blocks['step_two'].add_positions(lp_prob_response[1])
-    lp_prob_response.append(blocks['step_two'].to_json())    
+    blocks = BlockList(session['step_two'], as_json=True)
+    lp_prob_response = cargo_ordering(blocks, params)
+    blocks.add_positions(lp_prob_response[1])
+    session['step_two'] = blocks.to_json()
+    lp_prob_response.append(session['step_two'])    
     return jsonify(lp_prob_response)
 
 

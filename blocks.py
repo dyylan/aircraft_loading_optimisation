@@ -12,7 +12,10 @@ class Block:
         self.position = position
 
     def __lt__(self, other):
-        return self.position < other.position
+        if self.position:
+            return self.position < other.position
+        else: 
+            return self.size > other.size
 
     def add_position(self, position):
         self.position = position
@@ -35,10 +38,16 @@ class Block:
         
 class BlockList:
     """Block list class for the list of cargo blocks."""
-    def __init__(self, block_list, name_prefix='a'):
-        self.block_list = block_list
+    def __init__(self, block_list, as_json=False, name_prefix='a'):
         self.name_prefix = name_prefix
-        self._generate_blocks()
+        if as_json:
+            self.block_list_json = block_list
+            print(self.block_list_json)
+            self.block_list = [(block['size'], block['mass']) for block in self.block_list_json]
+            self._generate_blocks_from_json()
+        else: 
+            self.block_list = block_list
+            self._generate_blocks()
 
     def add_block(self, block):
         self.block_list.append(block)
@@ -89,7 +98,7 @@ class BlockList:
 
     def to_json(self):
         json_blocks = [block.to_json() for block in self.blocks]
-        return json_blocks      
+        return json_blocks              
 
     def _generate_blocks(self, positions=None):
         short_name = lambda i : f'{self.name_prefix}0{i+1}' if i<9 else f'{self.name_prefix}{i+1}'
@@ -98,3 +107,7 @@ class BlockList:
         if positions:
             self.blocks = [block.add_position(positions[block.long_name]) for block in self.blocks]
             self.blocks.sort()
+
+    def _generate_blocks_from_json(self):
+        self.blocks = [Block(block['size'], block['mass'], block['short_name'], block['long_name'], block['position']) for block in self.block_list_json]
+        self.blocks.sort()

@@ -14,7 +14,8 @@ def cargo_loading(blocks, params):
     lp_problem += sum([block.mass*a[block.short_name] for block in blocks.blocks]) <= params['max_load'], "Total mass of cargo cannot exceed a maximum load"
     lp_problem += sum([block.size*a[block.short_name] for block in blocks.blocks]) <= params['fuselage_length'], "Total size of cargo cannot exceed fuselage length"
     lp_problem.writeLP("CargoLoad.lp")
-    lp_problem.solve(pulp.PULP_CBC_CMD(maxSeconds=60, msg=1, fracGap=0))
+    #lp_problem.solve(pulp.PULP_CBC_CMD(maxSeconds=60, msg=1, fracGap=0))
+    lp_problem.solve(pulp.GLPK_CMD(msg=1))
     lp_prob_response = [{'status'         : pulp.LpStatus[lp_problem.status],
                         'cargo_mass'      : pulp.value(lp_problem.objective),
                         'fuselage_length' : params['fuselage_length'],
@@ -45,7 +46,8 @@ def cargo_ordering(blocks, params):
         lp_problem += pulp.lpSum([x[block.short_name][j] for j in range(fuselage_length)]) == block.size+((2/3)*((1-block.size)*(2-block.size))), f"Each block {block.short_name} is in exactly one place"
     #lp_problem += pulp.lpSum([x[block.short_name][j] for block in blocks.blocks for j in range(fuselage_length)]) == fuselage_length, f"Every block should be placed"
     lp_problem.writeLP("CargoOrder.lp")
-    lp_problem.solve(pulp.PULP_CBC_CMD(maxSeconds=60, msg=1, fracGap=0))
+    #lp_problem.solve(pulp.PULP_CBC_CMD(maxSeconds=60, msg=1, fracGap=0))
+    lp_problem.solve(pulp.GLPK_CMD(msg=1))
     variables_result = {f'{variable.name}': variable.varValue for variable in lp_problem.variables()}
     cargo_positions = {f'{get_name(variable.name)}': int(get_position(variable.name)) for variable in lp_problem.variables() if variable.varValue}
     lp_prob_response = [{'status'          : pulp.LpStatus[lp_problem.status],
