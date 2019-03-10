@@ -107,7 +107,7 @@ def step_two_blocks():
 
 @app.route('/step-two/optimisation', methods=['GET'])
 def step_two_optimisation():
-    blocks = BlockList(session['step_two'], as_json=True)
+    blocks = BlockList(session['step_two'], as_json=True, name_prefix='b')
     lp_prob_response = cargo_ordering(blocks, params)
     blocks.add_positions(lp_prob_response[1])
     session['step_two'] = blocks.to_json()

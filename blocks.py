@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Block:
     """Block class for each cargo block."""
     def __init__(self, size, mass, short_name, long_name, position=None):
@@ -42,8 +39,8 @@ class BlockList:
         self.name_prefix = name_prefix
         if as_json:
             self.block_list_json = block_list
-            print(self.block_list_json)
             self.block_list = [(block['size'], block['mass']) for block in self.block_list_json]
+            print(self.block_list)
             self._generate_blocks_from_json()
         else: 
             self.block_list = block_list
