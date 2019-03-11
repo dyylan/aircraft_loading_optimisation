@@ -1,21 +1,22 @@
 class Block:
-    """Block class for each cargo block."""
+    """Block class for each cargo block, containing the basic block
+    functionality."""
     def __init__(self, size, mass, short_name, long_name, position=None):
         self.size = size
         self.mass = mass
         self.short_name = short_name
         self.long_name = long_name
-        self.density = np.true_divide(mass, size)
+        self.density = mass / size
         self.position = position
 
     def __lt__(self, other):
         if self.position:
             return self.position < other.position
         else: 
-            return self.size > other.size
+            return self.mass > other.mass
 
     def add_position(self, position):
-        self.position = position
+        self.position = position 
         return self
 
     def to_dict(self):
@@ -34,13 +35,15 @@ class Block:
 
         
 class BlockList:
-    """Block list class for the list of cargo blocks."""
+    """Block list class which contains most the functionality for maintaining
+    the session for the cargo blocks. This includes the functionality to 
+    generate a list of blocks from a JSON of blocks and to generate a blocks
+    JSON object for use on the client side, and storing as a session cookie."""
     def __init__(self, block_list, as_json=False, name_prefix='a'):
         self.name_prefix = name_prefix
         if as_json:
             self.block_list_json = block_list
             self.block_list = [(block['size'], block['mass']) for block in self.block_list_json]
-            print(self.block_list)
             self._generate_blocks_from_json()
         else: 
             self.block_list = block_list
@@ -95,16 +98,22 @@ class BlockList:
 
     def to_json(self):
         json_blocks = [block.to_json() for block in self.blocks]
-        return json_blocks              
+        return json_blocks     
+
+    def _generate_short_name(self, i):
+        short_name = f'{self.name_prefix}0{i+1}' if i<9 else f'{self.name_prefix}{i+1}' 
+        return short_name
+
+    def _generate_long_name(self, i):
+        long_name = f'cargo_{self.name_prefix}0{i+1}' if i<9 else f'cargo_{self.name_prefix}{i+1}'
+        return long_name
 
     def _generate_blocks(self, positions=None):
-        short_name = lambda i : f'{self.name_prefix}0{i+1}' if i<9 else f'{self.name_prefix}{i+1}'
-        long_name = lambda i : f'cargo_{self.name_prefix}0{i+1}' if i<9 else f'cargo_{self.name_prefix}{i+1}'
-        self.blocks = [Block(block[0], block[1], short_name(i), long_name(i)) for (i, block) in enumerate(self.block_list)] 
+        self.blocks = [Block(block[0], block[1], self._generate_short_name(i), self._generate_long_name(i)) for (i, block) in enumerate(self.block_list)] 
         if positions:
             self.blocks = [block.add_position(positions[block.long_name]) for block in self.blocks]
             self.blocks.sort()
 
     def _generate_blocks_from_json(self):
-        self.blocks = [Block(block['size'], block['mass'], block['short_name'], block['long_name'], block['position']) for block in self.block_list_json]
+        self.blocks = [Block(block['size'], block['mass'], self._generate_short_name(i), self._generate_long_name(i), block['position']) for i, block in enumerate(self.block_list_json)]
         self.blocks.sort()

@@ -1,4 +1,4 @@
 #!/bin/sh
 
 source venv/bin/activate
-exec gunicorn -b :5000 --access-logfile - --error-logfile - main:app
+exec gunicorn --worker-class gevent --workers 3 -b :5000 --access-logfile - --error-logfile - main:app

@@ -46,7 +46,7 @@ form fieldset li {
 }
 
 .type3 {
-    width: 160px;
+    width: 180px;
     height: 96px;
     background: rgba(4, 247, 4, 0.7); 
 }
@@ -64,28 +64,40 @@ form fieldset li {
 .step-fuselage {
     padding: 5px 0px;
     clear: both;    
-    overflow-x: auto;
 }
 
-.fuselage-table {
+.fuselage-container {
     padding: 5px 0px;
     clear: both;    
     overflow-x: auto;
 }
 
-.fuselage-container {
+.fuselage-table {    
+    border: 1px solid rgba(0, 0, 0, 0.25);
     display: table;
+    white-space: nowrap;
 }
 
 .fuselage {
-    display: table-row;
+    white-space: nowrap;
 }
 
 .fuselage-section {
-    display: table-cell;
     width: 100px;
-    height: 100px;
-    border: 1px dashed rgba(0, 0, 0, 0.7);
+    height: 50px;
+    border: 1px dashed rgba(0, 0, 0, 0.15);
+}
+
+.fuselage-numbering {
+    white-space: nowrap;
+}
+
+.fuselage-section-numbering {
+    width: 100px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 120%;
+    font-style: bold;
+    text-align: center;    
 }
 
 .calculating-message {

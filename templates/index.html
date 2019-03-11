@@ -10,12 +10,12 @@
     <form action="/" method="POST">
         <fieldset>
             <legend><b>Use sample blocks and parameters</b></legend>
-            {{ sample_form.csrf_token }}
+            {{ samples_form.csrf_token }}
             <ul>
-                <li>{{ sample_form.sample_blocks.label }} {{ sample_form.sample_blocks }}</li>
-                <li>{{ sample_form.simple_test_blocks.label }} {{ sample_form.simple_test_blocks }}</li>
-                <li>{{ sample_form.harder_test_blocks.label }} {{ sample_form.harder_test_blocks }}</li>
-                <li>{{ sample_form.submit }}</li>
+                <li>{{ samples_form.sample_blocks.label }} {{ samples_form.sample_blocks }}</li>
+                <li>{{ samples_form.simple_test_blocks.label }} {{ samples_form.simple_test_blocks }}</li>
+                <li>{{ samples_form.harder_test_blocks.label }} {{ samples_form.harder_test_blocks }}</li>
+                <li>{{ samples_form.submit }}</li>
             </ul>   
         </fieldset>
     </form>   
@@ -64,23 +64,26 @@
     <div id="step-one" class="step-one">
         <h2>Step 1: List of cargos in optimal solution</h2>
         <button onclick="optimiseForLoadedCargo()">Find optimal cargo</button>
+        <h4 id="calculating-message-loading" class="calculating-message"></h4>
         <p id="step-one-parameters" class="step-one-parameters"></p>
         <div id="step-one-blocks" class="blocks"> </div>
     </div>
     <div id="step-two" class="step-two">
         <h2>Step 2: Order of cargos in optimal solution</h2>
         <button onclick="optimiseForCargoOrder()">Find optimal order</button>
-        <h4 id="calculating-message" class="calculating-message"></h4>
+        <h4 id="calculating-message-ordering" class="calculating-message"></h4>
         <p id="step-two-parameters" class="step-two-parameters"></p>
         <div id="step-two-blocks" class="blocks"> </div>
     </div>
     <div class="step-fuselage">
         <h3>Fuselage</h3>
-        <div class="fuselage-table">
-            <div id="fuselage-container" class="fuselage-container">
-                <div id="fuselage" class="fuselage">
-                </div>
-            </div>
+        <div class="fuselage-container">
+            <table id="fuselage-table" class="fuselage-table">
+                <tr id="fuselage-numbering" class="fuselage-numbering">
+                </tr>
+                <tr id="fuselage" class="fuselage">
+                </tr>
+            </table>
         </div>
         
     </div>

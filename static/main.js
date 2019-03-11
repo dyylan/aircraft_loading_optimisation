@@ -1,12 +1,12 @@
 function blockClassType(blockSize) {
     switch (blockSize) {    
-        case 1: 
+        case 1.0: 
             className = "block type1";
             break;
         case 0.5:
             className = "block type2";
             break;
-        case 2:
+        case 2.0:
             className = "block type3";
     }
     return className
@@ -24,18 +24,42 @@ function generateBlocks(divElement, blocksList) {
 }
 
 
-function generateFuselage(divElement, blocks, fuselageLength) {
+function generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, fuselageLength) {
     for (let section=0; section<fuselageLength; section++) {
-        let sectionDiv = document.createElement("div");
+        
+        // Fuselage section for blocks
+        let sectionDiv = document.createElement("td");
         sectionDiv.className = "fuselage-section";
-        divElement.appendChild(sectionDiv);
+        sectionDiv.id = "section-" + section
+        fuselageDiv.appendChild(sectionDiv);
+        
+        // Section numbering      
+        let sectionNumberingDiv = document.createElement("td");        
+        sectionNumberingDiv.className = "fuselage-section-numbering";
+        sectionNumberingDiv.innerHTML = String(section + 1);
+        fuselageNumberingDiv.appendChild(sectionNumberingDiv);
+        
+        // Add blocks to the fuselage sections
         for (let i=0; i<blocks.length; i++) {
             let blockObj = blocks[i];
-            if (blockObj.position == section) {
+            if (blockObj.position == section && blockObj.size != 2.0) {        
+
+                // Place the corresponding block in the fuselage
                 let blockDiv = document.createElement("div");
                 blockDiv.className = blockClassType(blockObj.size);
                 blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
-                sectionDiv.appendChild(blockDiv);
+                sectionDiv.appendChild(blockDiv); 
+            }
+            if (blockObj.position == section-1 && blockObj.size == 2) {
+
+                // Place the previous section and delete the current section
+                let blockDiv = document.createElement("div");
+                blockDiv.className = blockClassType(blockObj.size);
+                blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
+                sectionDiv.remove(); 
+                let prevSectionDiv = document.getElementById("section-"+(section-1));
+                prevSectionDiv.colSpan = 2;
+                prevSectionDiv.appendChild(blockDiv); 
             }
         }
     }
@@ -56,8 +80,12 @@ function stepOne() {
         parametersDiv.innerHTML += "<font style='font-weight: bold;'>Solution status: </font>" + parameters['status'] + "<br>";
         let blocks = optimisation[2];
         let blocksDiv = document.getElementById("step-one-blocks");
+        blocksDiv.innerHTML = "";
+        
         // List of cargo variables
         generateBlocks(blocksDiv, blocks);
+        let calculatingDiv = document.getElementById("calculating-message-loading");
+        calculatingDiv.innerHTML = "";
     }); 
 }
 
@@ -75,23 +103,38 @@ function stepTwo() {
         parametersDiv.innerHTML += "<font style='font-weight: bold;'>Fuselage length: </font>" + parameters['fuselage_length'] + "<br>";
         parametersDiv.innerHTML += "<font style='font-weight: bold;'>Solution status: </font>" + parameters['status'] + "<br>";
         let blocks = optimisation[3];
+        
+        // Blocks in the correct order
         let blocksDiv = document.getElementById("step-two-blocks");
-        let fuselageDiv = document.getElementById("fuselage");
-        // List of cargo variables
+        blocksDiv.innerHTML = "";
         generateBlocks(blocksDiv, blocks);
-        generateFuselage(fuselageDiv, blocks, parameters['fuselage_length']);
-        let calculatingDiv = document.getElementById("calculating-message");
+
+        // Fuselage blocks row
+        let fuselageDiv = document.getElementById("fuselage");
+        fuselageDiv.innerHTML = "";
+        
+        // Fuselage numbering row
+        let fuselageNumberingDiv = document.getElementById("fuselage-numbering");
+        fuselageNumberingDiv.innerHTML = "";
+        
+        // Fuselage section
+        generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, parameters['fuselage_length']);
+        
+        // Remove calculating message 
+        let calculatingDiv = document.getElementById("calculating-message-ordering");
         calculatingDiv.innerHTML = "";
     });
 }
 
 
 function optimiseForLoadedCargo() {
+    let calculatingDiv = document.getElementById("calculating-message-loading");
+    calculatingDiv.innerHTML = "Please wait whilst cargo selection is optimised for maximum load...";
     stepOne();
 }
 
 function optimiseForCargoOrder() {
-    let calculatingDiv = document.getElementById("calculating-message");
+    let calculatingDiv = document.getElementById("calculating-message-ordering");
     calculatingDiv.innerHTML = "Please wait whilst order is optimised for minimum turning effect around centre...";
     stepTwo();
 }

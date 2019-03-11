@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 flask = "*"
-numpy = "*"
 pulp = "*"
 flask-wtf = "*"
 
