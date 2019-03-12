@@ -13,15 +13,15 @@ There are currently two linear programs. The notation and labels are consistent 
 ### Step one
 The first linear program is significantly simpler than the second and therefore runs very quickly. It takes the list of all available cargo blocks and returns the subset of cargo blocks which maximises the mass of the cargo blocks without exceeding the maximum weight limit or the length of the fuselage. 
 
-$$ \textrm{maximise} ~~~ \sum_{i=1}^{n}m_ib_i  
-   \\ ~~~~~~~~~~~~ \textrm{subject to} ~~~\sum_{i=1}^{n}m_ib_i \leq W_p ,
-   \\ ~~~~~~~~~~~~~~~~\textrm{and} ~~~~ \sum_{i=1}^{n}s_ib_i \leq L $$
+$$ \textrm{maximise} \quad \sum_{i=1}^{n}m_ib_i  
+   \\  \textrm{subject to} \quad \sum_{i=1}^{n}m_ib_i \leq W_p ,
+   \\ \textrm{and} \quad \sum_{i=1}^{n}s_ib_i \leq L $$
 In words, we want to maximise the mass of the blocks in the fuselage by summing the mass of all the blocks which appear in the fuselage. This is subject to the constraints that the mass of all the blocks that appear in the fuselage is less than the maximum payload, and also that the size of all the blocks that appear in the fuselage is less that the length.
 
 ### Step two
 The second linear program is more complicated as we have to fit the blocks into the fuselage such that the centre of gravity is in the centre (this could be set to an arbitrary position, here we just choose the centre for simplicity). The linear program involves introducing a matrix, $x_{ij}$, which is $1$ if block $i$ is in sections $j$, and $0$ otherwise. This means two blocks can have the same $j$ index if they are both size $0.5$. A block of size $2$ is in both section $j$ and $j+1$. The resulting linear program is:
-$$ \textrm{minimised} \sum_{i,j}x_{ij}m_j\left(j-\tfrac{L-1}{2}\right) \left[1-\tfrac{1}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right]
-    \\ \textrm{subject to constraints, 1): } ~~ \sum_{i,j}x_{ij}m_j\left(j-\tfrac{L-1}{2}\right) \left[1-\tfrac{1}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right] \geq 0
+$$ \textrm{minimised} \quad \sum_{i,j}x_{ij}m_j\left(j-\tfrac{L-1}{2}\right) \left[1-\tfrac{1}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right]
+    \\ \textrm{subject to constraints, 1): } \sum_{i,j}x_{ij}m_j\left(j-\tfrac{L-1}{2}\right) \left[1-\tfrac{1}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right] \geq 0
     \\ \textrm{and 2) for all fuselage sections (j):  } \sum_{i=1}^{n}x_{ij}\left[s_i-\tfrac{2}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right] \leq 1 
     \\ \textrm{and 3) for all cargo blocks (i):  } \sum_{j=1}^{L}x_{ij} - s_i - \tfrac{2}{3}\left(1-s_i\right)\left(2-s_i\right)= 0
     \\ \textrm{and 4) for all size 2 cargo blocks (i):  } \sum_{j=1}^{L}x_{ij}j(-1)^j \leq 1 \quad \textrm{and} \quad \sum_{j=1}^{L}x_{ij}j(-1)^j \geq -1 $$
