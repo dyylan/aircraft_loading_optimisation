@@ -69,31 +69,30 @@ form fieldset li {
 .fuselage-container {
     padding: 5px 0px;
     clear: both;    
-    overflow-x: auto;
+    overflow-x: scroll;
 }
 
 .fuselage-table {    
     border: 1px solid rgba(0, 0, 0, 0.25);
     display: table;
-    white-space: nowrap;
 }
 
 .fuselage {
-    white-space: nowrap;
+    column-width: 100px;
 }
 
 .fuselage-section {
-    width: 100px;
+    column-width: 100px;
     height: 50px;
     border: 1px dashed rgba(0, 0, 0, 0.15);
 }
 
 .fuselage-numbering {
-    white-space: nowrap;
+    column-width: 100px;
 }
 
 .fuselage-section-numbering {
-    width: 100px;
+    column-width: 100px;
     border: 1px solid rgba(0, 0, 0, 0.15);
     font-size: 120%;
     font-style: bold;
