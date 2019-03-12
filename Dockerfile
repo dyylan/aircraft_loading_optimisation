@@ -1,7 +1,5 @@
 FROM python:3.6-alpine
 
-ENV GLPK_VER 4.65
-
 RUN adduser -D main
 
 WORKDIR /home/main
