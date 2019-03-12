@@ -1,14 +1,14 @@
 import os
 from flask import Flask, render_template, jsonify, request, flash, session
-from blocks import Block, BlockList
-from forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
-from lp import cargo_loading, cargo_ordering
+from app.blocks import Block, BlockList
+from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
+from app.lp import cargo_loading, cargo_ordering
 
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
-solver = 'glpk'
+solver = 'default'
 
 sample_blocks = [(1.0, 2134), (1.0, 3455), (1.0, 1866), (1.0, 1699), (1.0, 3500), 
                  (1.0, 3332), (1.0, 2578), (1.0, 2315), (1.0, 1888), (1.0, 1786),
@@ -23,6 +23,7 @@ harder_test_blocks = [(1.0, 500), (1.0, 600), (1.0, 400), (0.5, 500), (0.5, 500)
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 300), (0.5, 200),
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 400), (0.5, 100),
                       (2.0, 900), (2.0, 800), (2.0, 1200), (2.0, 1000)]
+
 
 @app.route('/', methods=['GET','POST'])
 def index():
