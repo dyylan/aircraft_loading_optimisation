@@ -2,7 +2,7 @@
 ## Airbus Quantum Computing Challenge
 The [Airbus Quantum Computing Challenge](https://www.airbus.com/innovation/airbus-quantum-computing-challenge/Problem-statements.html) is a set of problems which Airbus has designed where the challenge is to implement the solutions on a quantum computer. This project looks specifically at ***Problem Statement 5: Aircraft Loading Optimisation***. 
 
-Try out the current version of the solver at https://airbus.dylanlewis.me. The server is only one vCPU, with 3 [gevent](http://www.gevent.org/index.html) workers, but it still manages the example optimisations with relative ease.
+Try out the current version of the solver at [https://airbus.dylanlewis.me]. The server is only one vCPU, with 3 [gevent](http://www.gevent.org/index.html) workers, but it still manages the example optimisations with relative ease.
 
 ## Application details
 The application uses the web micro-framework Flask to interact with the linear programming tools. Flask allows a simple index route to be defined in `main.py` with several forms defined in `app/forms.py`. These forms allow new settings to be input by the user. All the settings are saved to the client using session cookies so multiple client connections do not interfere with each other. The data is saved to the client as a JSON object which is converted to Python objects for manipulation via the Block and BlockList classes located in `app/blocks.py`. JavaScript functions in `static/main.js` use `fetch` to to allow the client to request JSON objects containing the results of the linear programming steps from the server. The linear programs are contained in `app/lp.py`. 
@@ -13,7 +13,7 @@ There are currently two linear programs. The notation and labels are consistent 
 ### Step one
 The first linear program is significantly simpler than the second and therefore runs very quickly. It takes the list of all available cargo blocks and returns the subset of cargo blocks which maximises the mass of the cargo blocks without exceeding the maximum weight limit or the length of the fuselage. 
 <div align="center">
-<img src="static/tex/step_one_maths.png" alt="static/tex/step_one_maths.png" width="200" />
+<img src="tex/step_one_maths.png" alt="tex/step_one_maths.png" width="200" />
 </div>
 <!--$$ \textrm{maximise} \quad \sum_{i=1}^{n}m_ib_i  
    \\  \textrm{subject to} \quad \sum_{i=1}^{n}m_ib_i \leq W_p ,
@@ -25,7 +25,7 @@ In words, we want to maximise the mass of the blocks in the fuselage by summing 
 The second linear program is more complicated as we have to fit the blocks into the fuselage such that the centre of gravity is in the centre (this could be set to an arbitrary position, here we just choose the centre for simplicity). The linear program involves introducing a matrix, *x<sub>ij</sub>*, which is 1 if block *i* is in sections *j*, and 0 otherwise. This means two blocks can have the same *j* index if they are both size 0.5. A block of size 2 is in both section *j* and *j*+1. The resulting linear program is:
 
 <div align="center">
-<img src="static/tex/step_two_maths.png" alt="static/tex/step_two_maths.png" width="600" />
+<img src="tex/step_two_maths.png" alt="tex/step_two_maths.png" width="600" />
 </div>
 
 <!--$$ \textrm{minimise} \quad \sum_{i,j}x_{ij}m_j\left(j-\tfrac{L-1}{2}\right) \left[1-\tfrac{1}{3}\left(s_i-\tfrac{1}{2}\right)\left(s_i-1\right)\right]
@@ -49,9 +49,10 @@ Once the repo has been cloned and Docker has been installed, make a .env file wi
 ```
 FLASK_APP=main.py
 FLASK_DEBUG=0
+SOLVER=glpk
 SECRET_KEY=supersecretunguessablekey
 ```
-`FLASK_DEBUG` can be set to 1 if you are not using Docker. This makes testing and developing easier.
+`FLASK_DEBUG` can be set to 1 if you are not using Docker. This makes testing and developing easier. To run in the Docker, the `SOLVER` environment variable must be set to `glpk`. However, if running locally, `default` or `COIN` can also be used if you have the correct packages installed on your computer.
 
 ### With Docker
 You can now simply build the image, which I have named "airbus", from within the project directory: 

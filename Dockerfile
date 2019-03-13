@@ -33,7 +33,9 @@ RUN apk del .build-deps gcc musl-dev
 
 COPY static static
 COPY templates templates
-COPY main.py forms.py blocks.py lp.py startup.sh ./
+COPY app app
+COPY main.py startup.sh ./
+
 
 RUN chmod +x startup.sh
 RUN dos2unix startup.sh

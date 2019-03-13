@@ -8,7 +8,7 @@ from app.lp import cargo_loading, cargo_ordering
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
-solver = 'default'
+solver = os.getenv('SOLVER')
 
 sample_blocks = [(1.0, 2134), (1.0, 3455), (1.0, 1866), (1.0, 1699), (1.0, 3500), 
                  (1.0, 3332), (1.0, 2578), (1.0, 2315), (1.0, 1888), (1.0, 1786),
