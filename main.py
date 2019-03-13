@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, jsonify, request, flash, session
+from flask import Flask, render_template, jsonify, request, session
 from app.blocks import Block, BlockList
 from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
 from app.lp import cargo_loading, cargo_ordering
@@ -25,62 +25,34 @@ harder_test_blocks = [(1.0, 500), (1.0, 600), (1.0, 400), (0.5, 500), (0.5, 500)
                       (2.0, 900), (2.0, 800), (2.0, 1200), (2.0, 1000)]
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET'])
 def index():
-    form = CargoBlockForm()
+    samples_form = UseSampleBlocks()
+    cargo_form = CargoBlockForm()    
     remove_form = RemoveCargoBlockForm()
     params_form = ChangeParamsForm()
-    samples_form = UseSampleBlocks()
     if 'step_one' not in session: 
         session['step_one'] = BlockList([]).to_json()
     if 'params' not in session:
         session['fuselage_length'] = 20
         session['max_load'] = 40000
-    if form.errors:
-        flash("Cargo block was not added.")
-    if form.validate_on_submit():
-        block = (float(form.blocksize.data),float(form.mass.data))
-        blocks = BlockList(session['step_one'], as_json=True)
-        blocks.add_block(block) 
-        session['step_one'] = blocks.to_json()
-        flash(f'Cargo block added with mass {form.mass.data}kg and size {form.blocksize.data}')
-    if remove_form.validate_on_submit():
-        blocks = BlockList(session['step_one'], as_json=True)
-        removal = blocks.remove_block(str(remove_form.block_name.data))
-        if removal:
-            flash(f'Removed cargo block {str(remove_form.block_name.data)} and relabelled remaining cargo blocks')
-        else:
-            flash(f'Cargo block {str(remove_form.block_name.data)} not found')
-        session['step_one'] = blocks.to_json()
-    if params_form.validate_on_submit():
-        session['fuselage_length'] = float(params_form.fuselage_length.data)            
-        session['max_load'] = float(params_form.max_load.data)
-        flash(f'Changed fuselage length to {params_form.fuselage_length.data}')
-        flash(f'Changed max load to {params_form.max_load.data}')
-    if samples_form.validate_on_submit():
-        if samples_form.sample_blocks.data:
-            session['step_one'] = BlockList(sample_blocks).to_json()
-            session['fuselage_length'] = 20
-            session['max_load'] = 40000
-            flash(f'Sample problem blocks loaded')
-            flash(f'Changed fuselage length to {session["fuselage_length"]}')
-            flash(f'Changed max load to {session["max_load"]}')
-        if samples_form.simple_test_blocks.data:
-            session['step_one'] = BlockList(simple_test_blocks).to_json()
-            session['fuselage_length'] = 3
-            session['max_load'] = 2000
-            flash(f'Test blocks loaded')
-            flash(f'Changed fuselage length to {session["fuselage_length"]}')
-            flash(f'Changed max load to {session["max_load"]}')
-        if samples_form.harder_test_blocks.data:
-            session['step_one'] = BlockList(harder_test_blocks).to_json()
-            session['fuselage_length'] = 8
-            session['max_load'] = 7000
-            flash(f'Test blocks loaded')
-            flash(f'Changed fuselage length to {session["fuselage_length"]}')
-            flash(f'Changed max load to {session["max_load"]}')
+    if 'messages' not in session:
+        session['messages'] = []
     session.modified = True
-    return render_template('index.html', form=form, remove_form=remove_form, params_form=params_form, samples_form=samples_form)
+    return render_template('index.html', samples_form=samples_form, cargo_form=cargo_form, remove_form=remove_form, params_form=params_form)
+
+
+@app.route('/messages', methods=['GET'])
+def messages_reset():
+    if 'messages' not in session:
+        session['messages'] = []
+    return jsonify(session['messages'])
+
+
+@app.route('/messages-reset', methods=['GET'])
+def messages():
+    session['messages'] = []
+    return jsonify({'messages_reset': 1})
 
 
 @app.route('/step-one/blocks', methods=['GET'])
@@ -88,6 +60,93 @@ def step_one_blocks():
     if 'step_one' not in session: 
         session['step_one'] = BlockList([]).to_json()
     return jsonify(session['step_one'])
+
+
+@app.route('/step-two/blocks', methods=['GET'])
+def step_two_blocks():
+    if 'step_two' not in session: 
+        session['step_two'] = BlockList([]).to_json()
+    return jsonify(session['step_two'])
+
+
+@app.route('/forms/samples', methods=['GET', 'POST'])
+def samples_form():
+    form = UseSampleBlocks()
+    sample = form.sample_blocks.data
+    simple = form.simple_test_blocks.data
+    harder = form.harder_test_blocks.data
+    if form.validate_on_submit():        
+        if not sample and not simple and not harder:
+            return jsonify({'samples_form_update': 0})
+        if sample:
+            session['step_one'] = BlockList(sample_blocks).to_json()
+            session['fuselage_length'] = 20
+            session['max_load'] = 40000
+            session['messages'].extend([f'Sample problem blocks loaded',
+                                        f'Changed fuselage length to {session["fuselage_length"]}',
+                                        f'Changed max load to {session["max_load"]}'])
+        if simple:
+            session['step_one'] = BlockList(simple_test_blocks).to_json()
+            session['fuselage_length'] = 3
+            session['max_load'] = 2000
+            session['messages'].extend([f'Test blocks loaded',
+                                        f'Changed fuselage length to {session["fuselage_length"]}',
+                                        f'Changed max load to {session["max_load"]}'])
+        if harder:
+            session['step_one'] = BlockList(harder_test_blocks).to_json()
+            session['fuselage_length'] = 8
+            session['max_load'] = 7000
+            session['messages'].extend([f'Test blocks loaded',
+                                        f'Changed fuselage length to {session["fuselage_length"]}',
+                                        f'Changed max load to {session["max_load"]}'])
+        session.modified = True
+        return jsonify({'samples_form_update': 1})
+    return jsonify({'samples_form_update': 0})
+
+
+@app.route('/forms/add-cargo', methods=['GET', 'POST'])
+def add_cargo_form():
+    form = CargoBlockForm()
+    if form.validate_on_submit():
+        block = (float(form.blocksize.data),float(form.mass.data))
+        blocks = BlockList(session['step_one'], as_json=True)
+        blocks.add_block(block) 
+        session['step_one'] = blocks.to_json()
+        session['messages'].append(f'Cargo block added with mass {form.mass.data}kg and size {form.blocksize.data}')
+        session.modified = True
+        return jsonify({'add_cargo_form_update': 1})
+    return jsonify({'add_cargo_form_update': 0})
+
+
+@app.route('/forms/remove-cargo', methods=['GET', 'POST'])
+def remove_cargo_form():
+    form = RemoveCargoBlockForm()
+    blocks = BlockList(session['step_one'], as_json=True)
+    if form.validate_on_submit():
+        removal = blocks.remove_block(str(form.block_name.data))
+        if removal:
+            session['messages'].append(f'Removed cargo block {str(form.block_name.data)} and relabelled remaining cargo blocks')
+        else:
+            session['messages'].append(f'Cargo block {str(form.block_name.data)} not found')
+        session['step_one'] = blocks.to_json()
+        session.modified = True
+        return jsonify({'remove_cargo_form_update': 1})
+    return jsonify({'remove_cargo_form_update': 0})
+
+
+@app.route('/forms/params', methods=['GET', 'POST'])
+def params_form():
+    form = ChangeParamsForm()
+    if form.validate_on_submit():
+        if float(form.fuselage_length.data) > 0:
+            session['fuselage_length'] = float(form.fuselage_length.data)        
+            session['messages'].append(f'Changed fuselage length to {form.fuselage_length.data}')
+        if float(form.max_load.data) > 0:
+            session['max_load'] = float(form.max_load.data)
+            session['messages'].append(f'Changed max load to {form.max_load.data}')
+        session.modified = True
+        return jsonify({'params_form_update': 1})
+    return jsonify({'params_form_update': 0})
 
 
 @app.route('/step-one/optimisation', methods=['GET'])
@@ -102,13 +161,6 @@ def step_one_optimisation():
     session['step_two'] = blocks_two.to_json()
     lp_prob_response.append(cargo_boxes_result)
     return jsonify(lp_prob_response)
-
-
-@app.route('/step-two/blocks', methods=['GET'])
-def step_two_blocks():
-    if 'step_two' not in session: 
-        session['step_two'] = BlockList([]).to_json()
-    return jsonify(session['step_two'])
 
 
 @app.route('/step-two/optimisation', methods=['GET'])

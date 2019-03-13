@@ -66,8 +66,21 @@ function generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, fuselageLen
 }
 
 
+function loadBlocks() {
+    let blocksDiv = document.getElementById("available-blocks");
+    blocksDiv.innerHTML = "";
+    fetch('/step-one/blocks')
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(blocks) {
+        generateBlocks(blocksDiv, blocks);
+    });
+}
+
+
 function stepOne() {
-   fetch('/step-one/optimisation')
+    fetch('/step-one/optimisation')
     .then(function(response) {
         return response.json();
     })
@@ -133,6 +146,7 @@ function optimiseForLoadedCargo() {
     stepOne();
 }
 
+
 function optimiseForCargoOrder() {
     let calculatingDiv = document.getElementById("calculating-message-ordering");
     calculatingDiv.innerHTML = "Please wait whilst order is optimised for minimum turning effect around centre...";
@@ -140,13 +154,4 @@ function optimiseForCargoOrder() {
 }
 
 
-fetch('/step-one/blocks')
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(blocks) {
-        let blocksDiv = document.getElementById("available-blocks") 
-        generateBlocks(blocksDiv, blocks)
-    });
-
-
+loadBlocks();

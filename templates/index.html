@@ -4,10 +4,23 @@
         <title>Aircraft Loading Optimisation</title>
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet"> 
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+              tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                processEscapes: true
+              }
+            });
+        </script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
     </head>
 <body>
     <h1>Airbus Quantum Computing Challenge</h1>
-    <form action="/" method="POST">
+    <button id="btn-info-display" class="btn-info-display" onclick="showOrHideInfo(this)">Display introduction</button>
+    <div id="description" style="display: none;">
+        {% include "_description.html" %}
+    </div>
+    <form enctype="multipart/form-data" method="POST" id="samples-form">
         <fieldset>
             <legend><b>Use sample blocks and parameters</b></legend>
             {{ samples_form.csrf_token }}
@@ -15,62 +28,54 @@
                 <li>{{ samples_form.sample_blocks.label }} {{ samples_form.sample_blocks }}</li>
                 <li>{{ samples_form.simple_test_blocks.label }} {{ samples_form.simple_test_blocks }}</li>
                 <li>{{ samples_form.harder_test_blocks.label }} {{ samples_form.harder_test_blocks }}</li>
-                <li>{{ samples_form.submit }}</li>
             </ul>   
         </fieldset>
     </form>   
-    <form action="/" method="POST">
+    <form enctype="multipart/form-data" method="POST" id="cargo-form">
         <fieldset>
             <legend><b>Add a cargo block</b></legend>
-            {{ form.csrf_token }}
+            {{ cargo_form.csrf_token }}
             <ul>
-                <li>{{ form.mass.label }} {{ form.mass(size=10) }}</li>
-                <li>{{ form.blocksize.label }} {{ form.blocksize }}</li>
-                <li>{{ form.submit }}</li>
+                <li>{{ cargo_form.mass.label }} {{ cargo_form.mass(size=10) }}</li>
+                <li>{{ cargo_form.blocksize.label }} {{ cargo_form.blocksize }}</li>
             </ul>           
         </fieldset>
     </form>
-    <form action="/" method="POST">
+    <form enctype="multipart/form-data" method="POST" id="remove-form">
         <fieldset>
             <legend><b>Remove a cargo block</b></legend>
             {{ remove_form.csrf_token }}
             <ul>
                 <li>{{ remove_form.block_name.label }} {{ remove_form.block_name(size=10) }}</li>
-                <li>{{ remove_form.submit }}</li>
             </ul>                       
         </fieldset>
     </form>
-    <form action="/" method="POST">
+    <form enctype="multipart/form-data" method="POST" id="params-form">
         <fieldset>
             <legend><b>Change fuselage parameters</b></legend>
             {{ params_form.csrf_token }}
             <ul>
                 <li>{{ params_form.fuselage_length.label }} {{ params_form.fuselage_length(size=10) }}</li>
                 <li>{{ params_form.max_load.label }} {{ params_form.max_load(size=10) }}</li>
-                <li>{{ params_form.submit }}</li>
             </ul>         
         </fieldset>
-    </form>    
-    <ul>
-     {% for flashed_message in get_flashed_messages() %}
-        <li>
-            <div class="flashed-message">{{ flashed_message }}</div>
-        </li>
-    {% endfor %}       
+    </form>                  
+    <button class="btn-calculate" onclick="validateForms()">Update cargo blocks</button>
+    <ul id="flashed-messages">    
     </ul>
     <h2>List of all available cargos</h2>
     <div id="available-blocks" class="blocks">
     </div>
     <div id="step-one" class="step-one">
         <h2>Step 1: List of cargos in optimal solution</h2>
-        <button onclick="optimiseForLoadedCargo()">Find optimal cargo</button>
+        <button class="btn-calculate" onclick="optimiseForLoadedCargo()">Find optimal cargos</button>
         <h4 id="calculating-message-loading" class="calculating-message"></h4>
         <p id="step-one-parameters" class="step-one-parameters"></p>
         <div id="step-one-blocks" class="blocks"> </div>
     </div>
     <div id="step-two" class="step-two">
         <h2>Step 2: Order of cargos in optimal solution</h2>
-        <button onclick="optimiseForCargoOrder()">Find optimal order</button>
+        <button class="btn-calculate" onclick="optimiseForCargoOrder()">Find optimal order</button>
         <h4 id="calculating-message-ordering" class="calculating-message"></h4>
         <p id="step-two-parameters" class="step-two-parameters"></p>
         <div id="step-two-blocks" class="blocks"> </div>
@@ -87,6 +92,8 @@
         </div>
         
     </div>
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="{{ url_for('static', filename='blocks.js') }}"></script>
+    <script src="{{ url_for('static', filename='forms.js') }}"></script>
+    <script src="{{ url_for('static', filename='pages.js') }}"></script>
 </body>
 </html>

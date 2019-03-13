@@ -15,8 +15,8 @@ class RemoveCargoBlockForm(FlaskForm):
 
 
 class ChangeParamsForm(FlaskForm):
-    fuselage_length = IntegerField('Change fuselage length', validators=[DataRequired()])
-    max_load = DecimalField('Change maximum load', validators=[DataRequired()])
+    fuselage_length = IntegerField('Change fuselage length')
+    max_load = DecimalField('Change maximum load')
     submit = SubmitField('Submit')
 
 
