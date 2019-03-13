@@ -2,7 +2,7 @@
 ## Airbus Quantum Computing Challenge
 The [Airbus Quantum Computing Challenge](https://www.airbus.com/innovation/airbus-quantum-computing-challenge/Problem-statements.html) is a set of problems which Airbus has designed where the challenge is to implement the solutions on a quantum computer. This project looks specifically at ***Problem Statement 5: Aircraft Loading Optimisation***. 
 
-Try out the current version of the solver at [https://airbus.dylanlewis.me](). It currently does **not** work with IE or Edge. The server is only one vCPU, with 3 [gevent](http://www.gevent.org/index.html) workers, but it still manages the example optimisations with relative ease.
+Try out the current version of the solver [here](https://airbus.dylanlewis.me). It currently does **not** work with IE or Edge. The server is only one vCPU, with 3 [gevent](http://www.gevent.org/index.html) workers, but it still manages the example optimisations with relative ease.
 
 ## Application details
 The application uses the web micro-framework Flask to interact with the linear programming tools. Flask allows a simple index route to be defined in `main.py` with several forms defined in `app/forms.py`. These forms allow new settings to be input by the user. All the settings are saved to the client using session cookies so multiple client connections do not interfere with each other. The data is saved to the client as a JSON object which is converted to Python objects for manipulation via the Block and BlockList classes located in `app/blocks.py`. JavaScript functions in `static/main.js` use `fetch` to to allow the client to request JSON objects containing the results of the linear programming steps from the server. The linear programs are contained in `app/lp.py`. 
