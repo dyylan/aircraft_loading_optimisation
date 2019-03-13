@@ -20,6 +20,7 @@
     <div id="description" style="display: none;">
         {% include "_description.html" %}
     </div>
+    <h3>Note: Currently the solver does not work with IE or edge.</h3>
     <form enctype="multipart/form-data" method="POST" id="samples-form">
         <fieldset>
             <legend><b>Use sample blocks and parameters</b></legend>
@@ -56,7 +57,9 @@
             {{ params_form.csrf_token }}
             <ul>
                 <li>{{ params_form.fuselage_length.label }} {{ params_form.fuselage_length(size=10) }}</li>
-                <li>{{ params_form.max_load.label }} {{ params_form.max_load(size=10) }}</li>
+                <li>{{ params_form.max_load.label }} {{ params_form.max_load(size=10) }}</li>                
+                <li style="font-size: 80%; margin: 4px 0px 3px 0px;">Note: Please enter both a fuselage length and max load to update the fuselage parameters</li>
+
             </ul>         
         </fieldset>
     </form>                  
@@ -90,7 +93,6 @@
                 </tr>
             </table>
         </div>
-        
     </div>
     <script src="{{ url_for('static', filename='blocks.js') }}"></script>
     <script src="{{ url_for('static', filename='forms.js') }}"></script>

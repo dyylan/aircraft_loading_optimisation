@@ -27,18 +27,20 @@ form fieldset li {
 }
 
 .btn-info-display {
-    padding: 8px 22px;
+    padding: 2px 2px;
     margin: 4px 2px;
     text-align: center;
     font-size: 102%;
     color: black;
-    background-color: rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0px 0px 1px 0px;
+    border-color: rgba(0, 0, 0, 0.3);
 }
 
 .btn-info-display:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-    border: 1px solid  rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0px 0px 1px 0px;
+    border-color: rgba(0, 0, 0, 0.9);
     cursor: pointer;
     transition: 0.3s;
 }

@@ -45,6 +45,24 @@ function reloadMessages() {
     })
 }
 
+function resetBlocks() {
+    let stepOneBlocksDiv = document.getElementById("step-one-blocks");
+    stepOneBlocksDiv.innerHTML = "";
+
+    // Blocks in the correct order
+    let stepTwoBlocksDiv = document.getElementById("step-two-blocks");
+    stepTwoBlocksDiv.innerHTML = "";
+
+    // Fuselage blocks row
+    let fuselageDiv = document.getElementById("fuselage");
+    fuselageDiv.innerHTML = "";
+    
+    // Fuselage numbering row
+    let fuselageNumberingDiv = document.getElementById("fuselage-numbering");
+    fuselageNumberingDiv.innerHTML = "";
+}
+
+
 async function validateForms() {
     await resetMessages();
     await sendForm("samples-form", "/forms/samples");
@@ -52,5 +70,6 @@ async function validateForms() {
     await sendForm("remove-form", "/forms/remove-cargo");
     await sendForm("params-form", "/forms/params");
     reloadMessages();
+    resetBlocks()
     loadBlocks();
 }
