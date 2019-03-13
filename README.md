@@ -12,7 +12,7 @@ There are currently two linear programs. The notation and labels are consistent 
 
 ### Step one
 The first linear program is significantly simpler than the second and therefore runs very quickly. It takes the list of all available cargo blocks and returns the subset of cargo blocks which maximises the mass of the cargo blocks without exceeding the maximum weight limit or the length of the fuselage. 
-<div style="text-align: center;">
+<div align="center">
 <img src="static/tex/step_one_maths.png" alt="step one linear program" width="200" />
 </div>
 <!--$$ \textrm{maximise} \quad \sum_{i=1}^{n}m_ib_i  
@@ -24,7 +24,7 @@ In words, we want to maximise the mass of the blocks in the fuselage by summing 
 ### Step two
 The second linear program is more complicated as we have to fit the blocks into the fuselage such that the centre of gravity is in the centre (this could be set to an arbitrary position, here we just choose the centre for simplicity). The linear program involves introducing a matrix, *x<sub>ij</sub>*, which is 1 if block *i* is in sections *j*, and 0 otherwise. This means two blocks can have the same *j* index if they are both size 0.5. A block of size 2 is in both section *j* and *j*+1. The resulting linear program is:
 
-<div style="text-align: center;">
+<div align="center">
 <img src="static/tex/step_two_maths.png" alt="step two linear program" width="600" />
 </div>
 
