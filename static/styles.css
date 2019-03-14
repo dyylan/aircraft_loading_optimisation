@@ -62,12 +62,24 @@ form fieldset li {
     transition: 0.3s;
 }
 
+.empty-block {
+    float: left;
+    margin: 3px 5px;
+    padding: 3px;
+    border: 2px solid rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0);
+}
+
 .block {
     font-family: 'Barlow', sans-serif;
     float: left;
     margin: 3px 5px;
     padding: 3px;
     border: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+.in-fuselage {
+    float: none;
 }
 
 .type1 {
@@ -106,7 +118,7 @@ form fieldset li {
 .fuselage-container {
     padding: 5px 0px;
     clear: both;    
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .fuselage-table {    
@@ -116,6 +128,7 @@ form fieldset li {
 
 .fuselage {    
     column-width: 100px;
+    height: 60px;
 }
 
 .fuselage-section {

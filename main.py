@@ -38,6 +38,10 @@ def index():
         session['max_load'] = 40000
     if 'messages' not in session:
         session['messages'] = []
+    session['step_one'] = BlockList([]).to_json()
+    session['fuselage_length'] = 20
+    session['max_load'] = 40000
+    session['messages'] = []
     session.modified = True
     return render_template('index.html', samples_form=samples_form, cargo_form=cargo_form, remove_form=remove_form, params_form=params_form)
 

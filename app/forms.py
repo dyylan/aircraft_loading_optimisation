@@ -18,6 +18,6 @@ class ChangeParamsForm(FlaskForm):
 
 
 class UseSampleBlocks(FlaskForm):
-    sample_blocks = BooleanField('Load sample blocks')
-    simple_test_blocks = BooleanField('Load simple test blocks')
-    harder_test_blocks = BooleanField('Load harder test blocks')
+    sample_blocks = BooleanField('Load sample blocks and fuselage parameters')
+    simple_test_blocks = BooleanField('Load simple test blocks and fuselage parameters')
+    harder_test_blocks = BooleanField('Load harder test blocks and fuselage parameters')

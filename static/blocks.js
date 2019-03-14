@@ -47,14 +47,17 @@ function generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, fuselageLen
                 // Place the corresponding block in the fuselage
                 let blockDiv = document.createElement("div");
                 blockDiv.className = blockClassType(blockObj.size);
+                blockDiv.className += " in-fuselage"
                 blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
+                blockDiv.style.cssFloat = "none"
                 sectionDiv.appendChild(blockDiv); 
             }
-            if (blockObj.position == section-1 && blockObj.size == 2) {
+            if (blockObj.position == section-1 && blockObj.size == 2.0) {
 
                 // Place the previous section and delete the current section
                 let blockDiv = document.createElement("div");
                 blockDiv.className = blockClassType(blockObj.size);
+                blockDiv.className += " in-fuselage"
                 blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
                 sectionDiv.remove(); 
                 let prevSectionDiv = document.getElementById("section-"+(section-1));
