@@ -31,13 +31,6 @@ def index():
     cargo_form = CargoBlockForm()    
     remove_form = RemoveCargoBlockForm()
     params_form = ChangeParamsForm()
-    if 'step_one' not in session: 
-        session['step_one'] = BlockList([]).to_json()
-    if 'params' not in session:
-        session['fuselage_length'] = 20
-        session['max_load'] = 40000
-    if 'messages' not in session:
-        session['messages'] = []
     session['step_one'] = BlockList([]).to_json()
     session['fuselage_length'] = 20
     session['max_load'] = 40000
