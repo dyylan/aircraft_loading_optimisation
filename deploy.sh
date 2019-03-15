@@ -2,8 +2,16 @@
 
 NAME=${1:-airbus}
 PORT=${2:-8001}
+REDEPLOY=${3:-0}
 
+echo Pulling latest git
 git pull
+
+if [$REDEPLOY != 0] 
+then
+    echo stopping container airbus 
+    docker container stop $NAME
+fi 
 
 echo Building Docker image ...
 docker build -t $NAME .
