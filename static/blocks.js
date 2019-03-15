@@ -39,20 +39,33 @@ function generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, fuselageLen
         sectionNumberingDiv.innerHTML = String(section + 1);
         fuselageNumberingDiv.appendChild(sectionNumberingDiv);
         
+        // Add an empty block placeholder
+        let emptyBlockDiv = document.createElement("div");
+        emptyBlockDiv.className = "empty-block"; 
+        sectionDiv.appendChild(emptyBlockDiv);
+
         // Add blocks to the fuselage sections
         for (let i=0; i<blocks.length; i++) {
             let blockObj = blocks[i];
             if (blockObj.position == section && blockObj.size != 2.0) {        
 
+                // Delete the empty block placeholder
+                emptyBlockDiv.remove()
+
                 // Place the corresponding block in the fuselage
                 let blockDiv = document.createElement("div");
                 blockDiv.className = blockClassType(blockObj.size);
-                blockDiv.className += " in-fuselage"
+                blockDiv.className += " in-fuselage";
                 blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
-                blockDiv.style.cssFloat = "none"
+                blockDiv.style.cssFloat = "none";
                 sectionDiv.appendChild(blockDiv); 
             }
             if (blockObj.position == section-1 && blockObj.size == 2.0) {
+
+                let prevSectionDiv = document.getElementById("section-"+(section-1));
+
+                // Delete the empty block placeholder
+                prevSectionDiv.removeChild(prevSectionDiv.firstChild);
 
                 // Place the previous section and delete the current section
                 let blockDiv = document.createElement("div");
@@ -60,7 +73,7 @@ function generateFuselage(fuselageDiv, fuselageNumberingDiv, blocks, fuselageLen
                 blockDiv.className += " in-fuselage"
                 blockDiv.innerHTML = "<font style='font-weight: bold;'>" + blockObj['long_name']+"</font><br>"+ blockObj['mass'] +"kg";
                 sectionDiv.remove(); 
-                let prevSectionDiv = document.getElementById("section-"+(section-1));
+
                 prevSectionDiv.colSpan = 2;
                 prevSectionDiv.appendChild(blockDiv); 
             }
