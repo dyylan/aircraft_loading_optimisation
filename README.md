@@ -67,7 +67,7 @@ This builds a container which is accessible on port 8000.
 
 Even more simply, you can just run the `deploy.sh` script, with arguments for name, port and whether it is a redeployment: 
 ```
-./deploy.sh airbus 8000 redeploy
+sh ./deploy.sh airbus 8000 redeploy
 ```
 Which will also do `git pull` and a `docker image prune`. The `redeploy` argument means the docker container with name `airbus` will be stopped. Simply remove `redeploy` to prevent this.
 
