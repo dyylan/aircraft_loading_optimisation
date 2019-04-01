@@ -12,6 +12,8 @@ if [$REDEPLOY != 0]
 then
     echo stopping container airbus 
     docker container stop $NAME
+    echo removing container airbus
+    docker container rm airbus
 fi 
 
 echo Building Docker image ...
@@ -23,7 +25,7 @@ docker run --name $NAME -d -p $PORT:5000 --rm --env-file=.env $NAME
 echo Deleting unused images
 docker image prune -f
 
-if [$LOGS != 0] 
+if [$LOGS != 0]
 then
     echo Beginning the logging -- CTRL+c to esacpe logs.
     docker logs --tail 350 -f $NAME
