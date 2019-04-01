@@ -1,0 +1,2 @@
+from qbsolv import QBSolv
+

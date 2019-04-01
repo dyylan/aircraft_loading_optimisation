@@ -8,7 +8,7 @@ LOGS=${4:-0}
 echo Pulling latest git
 git pull
 
-if [$REDEPLOY != 0] 
+if [ $REDEPLOY != 0 ] 
 then
     echo stopping container airbus 
     docker container stop $NAME
@@ -25,7 +25,7 @@ docker run --name $NAME -d -p $PORT:5000 --rm --env-file=.env $NAME
 echo Deleting unused images
 docker image prune -f
 
-if [$LOGS != 0]
+if [ $LOGS != 0 ]
 then
     echo Beginning the logging -- CTRL+c to esacpe logs.
     docker logs --tail 350 -f $NAME

@@ -7,6 +7,7 @@ name = "pypi"
 flask = "*"
 pulp = "*"
 flask-wtf = "*"
+dwave-qbsolv = "*"
 
 [dev-packages]
 
