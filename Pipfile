@@ -8,6 +8,8 @@ flask = "*"
 pulp = "*"
 flask-wtf = "*"
 dwave-qbsolv = "*"
+numpy = "*"
+dwave-neal = "*"
 
 [dev-packages]
 

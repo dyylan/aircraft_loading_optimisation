@@ -156,6 +156,29 @@ function stepTwo() {
 }
 
 
+function stepOneQUBO() {
+    fetch('/qubo/step-one')
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(optimisation) {
+        let parameters = optimisation[0];
+        let parametersDiv = document.getElementById("qubo-step-one-parameters");
+        parametersDiv.innerHTML = "<font style='font-weight: bold;'>Cargo mass: </font>" + parameters['cargo_mass'] + "<br>";
+        parametersDiv.innerHTML += "<font style='font-weight: bold;'>Max load: </font>" + parameters['max_load'] + "<br>";
+        parametersDiv.innerHTML += "<font style='font-weight: bold;'>Fuselage length: </font>" + parameters['fuselage_length'] + "<br>";
+        let blocks = optimisation[2];
+        let blocksDiv = document.getElementById("qubo-step-one-blocks");
+        blocksDiv.innerHTML = "";
+        
+        // List of cargo variables
+        generateBlocks(blocksDiv, blocks);
+        let calculatingDiv = document.getElementById("calculating-message-loading-qubo");
+        calculatingDiv.innerHTML = "";
+    }); 
+}
+
+
 function optimiseForLoadedCargo() {
     let calculatingDiv = document.getElementById("calculating-message-loading");
     calculatingDiv.innerHTML = "Please wait whilst cargo selection is optimised for maximum load...";
@@ -164,9 +187,20 @@ function optimiseForLoadedCargo() {
 
 
 function optimiseForCargoOrder() {
+    let fuselageTitle = document.getElementById("fuselage-title");
+    let fuselageContainer = document.getElementById("fuselage-container");
+    fuselageTitle.className = "visible";
+    fuselageContainer.className = "fuselage-container visible";
     let calculatingDiv = document.getElementById("calculating-message-ordering");
     calculatingDiv.innerHTML = "Please wait whilst order is optimised for minimum turning effect around centre...";
     stepTwo();
+}
+
+
+function optimiseForLoadedCargoQUBO() {
+    let calculatingDiv = document.getElementById("calculating-message-loading-qubo");
+    calculatingDiv.innerHTML = "Please wait whilst cargo selection is optimised for maximum load using QUBO...";
+    stepOneQUBO();
 }
 
 

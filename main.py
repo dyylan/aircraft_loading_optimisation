@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, request, session
 from app.blocks import Block, BlockList
 from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
 from app.lp import cargo_loading, cargo_ordering
+from app.qubo import CargoQubo
 
 
 app = Flask(__name__)
@@ -34,6 +35,7 @@ def index():
     session['step_one'] = BlockList([]).to_json()
     session['fuselage_length'] = 20
     session['max_load'] = 40000
+    session['penalty'] = 1000
     session['messages'] = []
     session.modified = True
     return render_template('index.html', samples_form=samples_form, cargo_form=cargo_form, remove_form=remove_form, params_form=params_form)
@@ -172,5 +174,18 @@ def step_two_optimisation():
     return jsonify(lp_prob_response)
 
 
-
+@app.route('/qubo/step-one', methods=['GET'])
+def generate_qubo_objective():
+    blocks = BlockList(session['step_one'], as_json=True, name_prefix='b')
+    params = {
+        'block_list'        : blocks,
+        'max_load'          : session['max_load'],
+        'fuselage_length'   : session['fuselage_length'],
+        'penalty'           : session['penalty']
+    }
+    qubo = CargoQubo(params)
+    qubo.solver(ising=True)
+    session['qubo'] = qubo.solution_json()
+    qubo.to_json()
+    return jsonify(qubo.solution_json())
 

@@ -153,3 +153,11 @@ form fieldset li {
 .calculating-message {
     font-style: italic; 
 }
+
+.hidden {
+    display: none
+}
+
+.visible {
+    display: inline
+}

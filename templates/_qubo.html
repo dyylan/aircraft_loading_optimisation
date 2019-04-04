@@ -1,0 +1,49 @@
+<h3>Transforming from linear program to QUBO</h3> 
+<p>        
+    We need to map our linear programs to QUBO (quantum unconstrained binary optimisation) problems. 
+    This makes the problems suitable for a quantum annealer such as the D-Wave machine. 
+    
+</p>    
+<p>
+    We start with a linear program of the form in step one: 
+</p>    
+<p>
+    $$ \textrm{maximise} \quad \sum_{i=1}^{n}m_ib_i  
+    \\  \textrm{subject to} \quad \sum_{i=1}^{n}m_ib_i \leq W_p ,
+    \\ \textrm{and} \quad \sum_{i=1}^{n}s_ib_i \leq L $$
+</p>
+<p>
+    Which can be written
+</p>
+<p>
+    $$ \textrm{maximise} \quad \vec{m} \cdot \vec{b}  
+    \\  \textrm{subject to} \quad \mathbf{A} \vec{b} \leq \vec{c} $$
+</p>
+<p>
+    where $\vec{b}$ is a vector of $b_i$, $\vec{m}$ is a vector of $m_i$, and $\vec{c}=\left(W_p~L\right)^{\intercal}$. 
+    Using slack variables we can make the inequality an equality. This means we now have
+</p>
+<p>
+    $$ \textrm{maximise} \quad \vec{x}^{\intercal} \mathbf{C} \vec{x}  
+    \\  \textrm{subject to} \quad \mathbf{B} \vec{x} = \vec{c} $$
+</p>
+<p>
+    $\vec{b}$ extended by slack variables gives $\vec{x}$. 
+    $\vec{x}$ contains binary variables, $x_i \in \{0, 1\}$. We can now recast the problem as a quadratic unconstrained binary optimisation problem.
+</p>
+<p>
+    $$
+    y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + P \left(\mathbf{B} \vec{x} - \vec{c}\right)^{\intercal}\left(\mathbf{B} \vec{x} - \vec{c}\right)
+    \\ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + \vec{x}^{\intercal} \mathbf{D} \vec{x}
+    \\ y = \vec{x}^{\intercal} \mathbf{Q} \vec{x} + \textrm{constant}
+    $$
+</p>
+For references for the approach used in the mapping see: 
+    <ul>    
+        <li><a href="https://arxiv.org/ftp/arxiv/papers/1811/1811.11538.pdf">A Tutorial on Formulating and Using QUBO Models</a></li>
+        <li><a href="https://arxiv.org/pdf/1801.08653.pdf">Efficient Combinatorial Optimization Using Quantum Annealing</a></li>
+        <li><a href="file:///C:/Users/D80089/Downloads/qbsolv_techReport.pdf">Partitioning Optimization Problems for Hybrid Classical/Quantum Execution</a></li>
+    </ul>
+</p>
+
+<p></p>

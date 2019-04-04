@@ -59,7 +59,6 @@
                 <li>{{ params_form.fuselage_length.label }} {{ params_form.fuselage_length(size=10) }}</li>
                 <li>{{ params_form.max_load.label }} {{ params_form.max_load(size=10) }}</li>                
                 <li style="font-size: 80%; margin: 4px 0px 3px 0px;">Note: Please enter both a fuselage length and max load to update the fuselage parameters</li>
-
             </ul>         
         </fieldset>
     </form>                  
@@ -84,8 +83,8 @@
         <div id="step-two-blocks" class="blocks"> </div>
     </div>
     <div class="step-fuselage">
-        <h3>Fuselage</h3>
-        <div class="fuselage-container">
+        <h3 id="fuselage-title" class="hidden">Fuselage</h3>
+        <div id="fuselage-container" class="fuselage-container hidden">
             <table id="fuselage-table" class="fuselage-table">
                 <tr id="fuselage-numbering" class="fuselage-numbering">
                 </tr>
@@ -93,6 +92,15 @@
                 </tr>
             </table>
         </div>
+    </div>
+    <div class="qubo">
+        <h2>Quantum Unconstrained Binary Optimisation</h2>
+        {% include "_qubo.html" %}
+        <h2>Step 1: List of cargos in optimal solution with QUBO</h2>
+        <button class="btn-calculate" onclick="optimiseForLoadedCargoQUBO()">Find optimal order with QUBO</button>
+        <h4 id="calculating-message-loading-qubo" class="calculating-message"></h4>
+        <p id="qubo-step-one-parameters" class="qubo-step-one-parameters"></p>
+        <div id="qubo-step-one-blocks" class="blocks"></div>
     </div>
     <script src="{{ url_for('static', filename='blocks.js') }}"></script>
     <script src="{{ url_for('static', filename='forms.js') }}"></script>
