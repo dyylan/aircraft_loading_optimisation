@@ -1,5 +1,5 @@
 import numpy as np
-import neal
+#import neal
 from dwave_qbsolv import QBSolv
 
 
@@ -87,7 +87,8 @@ class CargoQubo:
         if ising:
             response = QBSolv().sample_ising(self.h, self.j) 
         else:
-            response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
+            #response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
+            response = QBSolv().sample_qubo(self.q_dict)
         min_energy = 0
         for sample in response.data(['sample', 'energy']):
             sample_dict = {'sample' : {k: int((1+sample[0][k])/2) for k in sample[0]}}
@@ -127,6 +128,7 @@ class CargoQubo:
         row_two.extend([0 for _ in self.slacks['mass']])
         row_two.extend([ssize[1] for ssize in self.slacks['size']])
         a = np.array([row_one, row_two])
+        print(a)
         return a.tolist()
 
     def _q_matrix(self):
@@ -151,6 +153,15 @@ class CargoQubo:
         #self.h = [(h_i/2) + (sum([q_j for j, q_j in enumerate(self.q[i]) if j>i]) / 4) for i, h_i in enumerate(h)]
         #self.j = {(i, j): self.q[i][j]/4 for i in range(len(self.q)) for j in range(len(self.q[0])) if j>i}
         self.j_json = self.to_jsonable(self.j)
+
+    def _q_matrix_alt(self):
+        # Objective function matrix c 
+        c = np.zeros((self.a.shape[1], self.a.shape[1]))
+        masses = [mass[1] for mass in self.masses]
+        for i, mass in enumerate(masses):
+            c[i][i] = mass
+        
+
 
     def _solution_blocks(self):
         self.solution_block_dict = {block_name : self.solution[var] for block_name, var in self.vars.items() if var in self.solution.keys()}
