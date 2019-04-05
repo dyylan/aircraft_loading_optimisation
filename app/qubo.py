@@ -1,6 +1,6 @@
 import numpy as np
 import neal
-#from dwave_qbsolv import QBSolv
+from dwave_qbsolv import QBSolv
 
 
 class CargoQubo:
@@ -87,8 +87,7 @@ class CargoQubo:
         if ising:
             response = QBSolv().sample_ising(self.h, self.j) 
         else:
-            #response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
-            response = QBSolv().sample_qubo(self.q_dict)
+            response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
         min_energy = 0
         for sample in response.data(['sample', 'energy']):
             sample_dict = {'sample' : {k: int((1+sample[0][k])/2) for k in sample[0]}}
@@ -114,7 +113,7 @@ class CargoQubo:
     @staticmethod
     def from_jsonable(str_dict):
         tuple_dict = {tuple([int(i) for i in k[1:-1].split(',')]) : v for k, v in str_dict.items()}
-               
+
     def _generate_slack_vars(self, name, max_value):
         slacks = {f'slack_{name}{i+1}': f'x{self.num_vars+1+i}' for i in range(self.num_slack_vars(max_value))}    
         self.vars.update(slacks)
