@@ -1,6 +1,6 @@
 import numpy as np
 import neal
-from dwave_qbsolv import QBSolv
+#from dwave_qbsolv import QBSolv
 
 
 class CargoQubo:
@@ -83,18 +83,18 @@ class CargoQubo:
         return solution   
 
     def solver(self, ising=True):
-        sampler = neal.SimulatedAnnealingSampler()
+        #sampler = neal.SimulatedAnnealingSampler()
         if ising:
             response = QBSolv().sample_ising(self.h, self.j) 
         else:
-            response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
+            #response = QBSolv().sample_qubo(self.q_dict, solver=sampler)
+            response = QBSolv().sample_qubo(self.q_dict)
         min_energy = 0
         for sample in response.data(['sample', 'energy']):
             sample_dict = {'sample' : {k: int((1+sample[0][k])/2) for k in sample[0]}}
             sample_dict.update({'energy' : sample[1]})            
             self.samples.append(sample_dict)
             min_energy = min(sample[1], min_energy)
-            print(sample)
             self.solution = {f'x{k+1}':v for k,v in sample_dict['sample'].items() if k<len(self.masses)} if min_energy == sample[1] else self.solution 
         self._solution_blocks()
         return response
@@ -106,7 +106,15 @@ class CargoQubo:
     @staticmethod
     def num_slack_vars(x):
         return int(np.log2(x))  
-        
+ 
+    @staticmethod
+    def to_jsonable(tuple_dict):
+        return {str(k) : v for k, v in tuple_dict.items()}
+
+    @staticmethod
+    def from_jsonable(str_dict):
+        tuple_dict = {tuple([int(i) for i in k[1:-1].split(',')]) : v for k, v in str_dict.items()}
+               
     def _generate_slack_vars(self, name, max_value):
         slacks = {f'slack_{name}{i+1}': f'x{self.num_vars+1+i}' for i in range(self.num_slack_vars(max_value))}    
         self.vars.update(slacks)
@@ -137,23 +145,15 @@ class CargoQubo:
 
     def _qubo(self):
         self.q_dict = {(i, j): self.q[i][j] for i in range(len(self.q)) for j in range(len(self.q[0])) if j>=i}
-        self.q_dict_json = self._to_jsonable(self.q_dict)
+        self.q_dict_json = self.to_jsonable(self.q_dict)
         self.h = np.array(self.q).diagonal().tolist()
         self.j = {(i, j): self.q[i][j] for i in range(len(self.q)) for j in range(len(self.q[0])) if j>i}
         #h = np.array(self.q).diagonal().tolist()
         #self.h = [(h_i/2) + (sum([q_j for j, q_j in enumerate(self.q[i]) if j>i]) / 4) for i, h_i in enumerate(h)]
         #self.j = {(i, j): self.q[i][j]/4 for i in range(len(self.q)) for j in range(len(self.q[0])) if j>i}
-        self.j_json = self._to_jsonable(self.j)
+        self.j_json = self.to_jsonable(self.j)
 
     def _solution_blocks(self):
         self.solution_block_dict = {block_name : self.solution[var] for block_name, var in self.vars.items() if var in self.solution.keys()}
         sol_blocks = [k for k,v in self.solution_block_dict.items() if v]
         self.solution_blocks = [block for block in self.blocks if block['long_name'] in sol_blocks]
-    
-    @staticmethod
-    def _to_jsonable(tuple_dict):
-        return {str(k) : v for k, v in tuple_dict.items()}
-
-    @staticmethod
-    def _from_jsonable(str_dict):
-        tuple_dict = {tuple([int(i) for i in k[1:-1].split(',')]) : v for k, v in str_dict.items()}

@@ -7,7 +7,8 @@ WORKDIR /home/main
 COPY requirements.txt requirements.txt
 
 RUN python -m venv venv
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev file make dos2unix 
+#RUN apk add --no-cache --virtual .build-deps gcc musl-dev file make dos2unix
+RUN apk add --no-cache --virtual .build-deps gcc g++ musl-dev file make dos2unix 
 #g++ subversion openblas
 
 # Make and install COIN-OR
@@ -29,7 +30,7 @@ RUN wget ftp://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz && \
 RUN venv/bin/pip install -r requirements.txt
 RUN venv/bin/pip install gunicorn gevent
 
-RUN apk del .build-deps gcc musl-dev 
+RUN apk del .build-deps gcc g++ musl-dev 
 
 COPY static static
 COPY templates templates
