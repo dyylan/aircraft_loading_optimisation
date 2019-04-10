@@ -20,7 +20,7 @@
     <div id="description" style="display: none;">
         {% include "_description.html" %}
     </div>
-    <h3>Note: Currently the solver does not work with IE or Edge.</h3>
+    <h4>Note: Currently the solver does not work with IE or Edge.</h4>
     <form enctype="multipart/form-data" method="POST" id="samples-form">
         <fieldset>
             <legend><b>Use sample blocks and parameters</b></legend>
@@ -65,25 +65,25 @@
     <button class="btn-calculate" onclick="validateForms()">Update cargo blocks</button>
     <ul id="flashed-messages">    
     </ul>
-    <h2>List of all available cargos</h2>
+    <h3>List of all available cargos</h3>
     <div id="available-blocks" class="blocks">
     </div>
     <div id="step-one" class="step-one">
-        <h2>Step 1: List of cargos in optimal solution</h2>
+        <h3>Step 1: List of cargos in optimal solution</h3>
         <button class="btn-calculate" onclick="optimiseForLoadedCargo()">Find optimal cargos</button>
         <h4 id="calculating-message-loading" class="calculating-message"></h4>
         <p id="step-one-parameters" class="step-one-parameters"></p>
         <div id="step-one-blocks" class="blocks"> </div>
     </div>
     <div id="step-two" class="step-two">
-        <h2>Step 2: Order of cargos in optimal solution</h2>
+        <h3>Step 2: Order of cargos in optimal solution</h3>
         <button class="btn-calculate" onclick="optimiseForCargoOrder()">Find optimal order</button>
-        <h4 id="calculating-message-ordering" class="calculating-message"></h4>
+        <h5 id="calculating-message-ordering" class="calculating-message"></h5>
         <p id="step-two-parameters" class="step-two-parameters"></p>
         <div id="step-two-blocks" class="blocks"> </div>
     </div>
     <div class="step-fuselage">
-        <h3 id="fuselage-title" class="hidden">Fuselage</h3>
+        <h5 id="fuselage-title" class="hidden">Fuselage</h5>
         <div id="fuselage-container" class="hidden">
             <table id="fuselage-table" class="fuselage-table">
                 <tr id="fuselage-numbering" class="fuselage-numbering">
@@ -94,7 +94,7 @@
         </div>
     </div>
     <div class="qubo">
-        <h1>Quantum Unconstrained Binary Optimisation</h1>
+        <h2>Quantum Unconstrained Binary Optimisation</h2>
         <button id="btn-info-display" class="btn-info-display" onclick="showOrHideInfo(this, 'qubo-intro', 'QUBO intro')">Display QUBO intro</button>
         <div id="qubo-intro" style="display: none;">
             {% include "_qubo.html" %}
@@ -112,9 +112,9 @@
         <button class="btn-calculate" onclick="validateQUBOForm()">Update QUBO parameters</button>
         <ul id="flashed-messages-qubo">    
         </ul>
-        <h2>Step 1: List of cargos in optimal solution with QUBO</h2>
+        <h3>Step 1: List of cargos in optimal solution with QUBO</h3>
         <button class="btn-calculate" onclick="optimiseForLoadedCargoQUBO()">Find optimal order with QUBO</button>
-        <h4 id="calculating-message-loading-qubo" class="calculating-message"></h4>
+        <h5 id="calculating-message-loading-qubo" class="calculating-message"></h5>
         <p id="qubo-step-one-parameters" class="qubo-step-one-parameters"></p>
         <div id="qubo-step-one-blocks" class="blocks"></div>
     </div>

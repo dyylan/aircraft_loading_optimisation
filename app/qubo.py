@@ -14,7 +14,7 @@ class CargoQubo:
                 'max_load'          : maximum cargo load;
                 'fuselage_length'   : fuselage length;
                 'penalty'           : penalty.
-            """ 
+        """ 
         self.blocks = params['block_list'].to_json()
         self.max_load = params['max_load']
         self.fuselage_length = params['fuselage_length']
@@ -91,7 +91,7 @@ class CargoQubo:
         """ Calculates the Q matrix using from -C+D (minimise a max objective so take negative).
             This is essentially the mapping of the linear program to QUBO, see 
             the description of the QUBO on the webapp page (templates/_qubo.hmtl)
-            """
+        """
         
         # A matrix of constraints with slack variables 
         a_matrix = np.array(self.a)
@@ -119,6 +119,8 @@ class CargoQubo:
         return q_matrix
 
     def qubo(self):
+        """ Converts the q matrix into h and J dictionaries to represent the Ising model.
+        """
         self.q_dict = {(i, j): self.q[i][j] for i in range(len(self.q)) for j in range(len(self.q[0])) if j>=i}
         self.q_dict_json = self.to_jsonable(self.q_dict)
         self.h = np.array(self.q).diagonal().tolist()
@@ -132,7 +134,7 @@ class CargoQubo:
     def dimod_solver(self):
         """ Uses dimod package from D-Wave to implement a binary quadratic model and
             then use a simulated annealer to sample from the model.
-            """
+        """
         linear = self.h_dict
         print(linear)
         quadratic = self.j
@@ -156,8 +158,9 @@ class CargoQubo:
 
     def qbsolv_solver(self, ising=True):
         """ qbsolv is for breaking up large optmisation problems into smaller
-            ones for the D-Wave machines. Is not properly implemented yet.
-            """
+            ones for the D-Wave machines. 
+            Is not properly implemented yet.
+        """
         if ising:
             response = QBSolv().sample_ising(self.h, self.j) 
         else:
