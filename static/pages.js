@@ -1,10 +1,9 @@
-function showOrHideInfo(button) {
-    description = document.getElementById("description");
+function showOrHideInfo(button, element, text) {
+    description = document.getElementById(element);
     if (description.style.display === "none") {
         description.style.display = "block";
-        button.innerHTML = "Hide introduction"
+        button.innerHTML = "Hide " + text;
     } else {
         description.style.display = "none";
-        button.innerHTML = "Display introduction"
-    }
+        button.innerHTML = "Display " + text;    }
 }

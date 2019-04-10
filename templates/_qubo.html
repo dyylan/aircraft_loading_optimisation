@@ -17,28 +17,32 @@
 </p>
 <p>
     $$ \textrm{maximise} \quad \vec{m} \cdot \vec{b}  
-    \\  \textrm{subject to} \quad \mathbf{A} \vec{b} \leq \vec{c} $$
+    \\  \textrm{subject to} \quad \mathbf{B} \vec{b} \leq \vec{c} $$
 </p>
 <p>
     where $\vec{b}$ is a vector of $b_i$, $\vec{m}$ is a vector of $m_i$, and $\vec{c}=\left(W_p~L\right)^{\intercal}$. 
-    Using slack variables we can make the inequality an equality. This means we now have
+    Using slack variables we can turn the inequality into an equality. This means we now have
 </p>
 <p>
     $$ \textrm{maximise} \quad \vec{x}^{\intercal} \mathbf{C} \vec{x}  
-    \\  \textrm{subject to} \quad \mathbf{B} \vec{x} = \vec{c} $$
+    \\  \textrm{subject to} \quad \mathbf{A} \vec{x} = \vec{c} $$
 </p>
 <p>
-    $\vec{b}$ extended by slack variables gives $\vec{x}$. 
-    $\vec{x}$ contains binary variables, $x_i \in \{0, 1\}$. We can now recast the problem as a quadratic unconstrained binary optimisation problem.
+    With $\vec{b}$ extended by slack variables, giving $\vec{x}$, a vector of binary variables, $x_i \in \{0, 1\}$. 
+    To accomodate the slack variables we extend the matrix $\mathbf{B}$ to $\mathbf{A}$, where the coefficients of the slack variables are powers of 2 in order to span the set of numbers up to the limit of the constraint. 
+    We can now recast the problem as a quadratic unconstrained binary optimisation problem.
 </p>
 <p>
-    $$
-    y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + P \left(\mathbf{B} \vec{x} - \vec{c}\right)^{\intercal}\left(\mathbf{B} \vec{x} - \vec{c}\right)
-    \\ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + \vec{x}^{\intercal} \mathbf{D} \vec{x}
-    \\ y = \vec{x}^{\intercal} \mathbf{Q} \vec{x} + \textrm{constant}
-    $$
+    $$ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + P \left(\mathbf{A} \vec{x} - \vec{c}\right)^{\intercal}\left(\mathbf{A} \vec{x} - \vec{c}\right)$$
+    $$ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + P \left(\vec{x}^{\intercal} \mathbf{A}^{\intercal}  - \vec{c}^{\intercal}\right)\left(\mathbf{A} \vec{x} - \vec{c}\right)$$
+    $$ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + P \left(\vec{x}^{\intercal} \mathbf{A}^{\intercal}\mathbf{A} \vec{x}  - \vec{x}^{\intercal} \mathbf{A}^{\intercal} \vec{c} - \vec{c}^{\intercal}\mathbf{A} \vec{x} \right) + P\vec{c}^{\intercal}\vec{c}$$
+    $$ y = \vec{x}^{\intercal} \mathbf{C} \vec{x} + \vec{x}^{\intercal} \mathbf{D} \vec{x} + \textrm{constant}$$
+    $$ y = \vec{x}^{\intercal} \mathbf{Q} \vec{x} + \textrm{constant}$$
 </p>
-For references for the approach used in the mapping see: 
+This means we can compute $\mathbf{Q}$ using 
+$$\mathbf{D} = P\left(\mathbf{A}^{\intercal}\mathbf{A} - \mathrm{diag}\left(\mathbf{A}^{\intercal} \vec{c}\right) - \mathrm{diag}\left(\vec{c}^{\intercal}\mathbf{A}\right)\right)$$
+$$\mathbf{D} = P\left(\mathbf{A}^{\intercal}\mathbf{A} - 2\mathrm{diag}\left(\mathbf{A}^{\intercal} \vec{c}\right)\right) $$
+For references for the approach used see: 
     <ul>    
         <li><a href="https://arxiv.org/ftp/arxiv/papers/1811/1811.11538.pdf">A Tutorial on Formulating and Using QUBO Models</a></li>
         <li><a href="https://arxiv.org/pdf/1801.08653.pdf">Efficient Combinatorial Optimization Using Quantum Annealing</a></li>

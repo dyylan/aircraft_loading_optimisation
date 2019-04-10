@@ -27,13 +27,13 @@ function resetMessages() {
     return fetch("/messages-reset")
 }
 
-function reloadMessages() {
+function reloadMessages(messagesDiv) {
     fetch("/messages")
     .then(function(response) {
         return response.json();
     })
     .then(function(messages) {            
-        let ul = document.getElementById("flashed-messages");
+        let ul = document.getElementById(messagesDiv);
         ul.innerHTML = "";
         for (let i=0; i<messages.length; i++) {
             let messageLi = document.createElement("li");
@@ -69,7 +69,13 @@ async function validateForms() {
     await sendForm("cargo-form", "/forms/add-cargo");
     await sendForm("remove-form", "/forms/remove-cargo");
     await sendForm("params-form", "/forms/params");
-    reloadMessages();
+    reloadMessages("flashed-messages");
     resetBlocks()
     loadBlocks();
+}
+
+async function validateQUBOForm() {
+    await resetMessages();
+    await sendForm("qubo-form", "/forms/qubo");
+    reloadMessages("flashed-messages-qubo");
 }

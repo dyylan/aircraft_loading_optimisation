@@ -166,6 +166,7 @@ function stepOneQUBO() {
         let parametersDiv = document.getElementById("qubo-step-one-parameters");
         parametersDiv.innerHTML = "<font style='font-weight: bold;'>Cargo mass: </font>" + parameters['cargo_mass'] + "<br>";
         parametersDiv.innerHTML += "<font style='font-weight: bold;'>Max load: </font>" + parameters['max_load'] + "<br>";
+        parametersDiv.innerHTML += "<font style='font-weight: bold;'>Cargo length: </font>" + parameters['cargo_length'] + "<br>";
         parametersDiv.innerHTML += "<font style='font-weight: bold;'>Fuselage length: </font>" + parameters['fuselage_length'] + "<br>";
         let blocks = optimisation[2];
         let blocksDiv = document.getElementById("qubo-step-one-blocks");
@@ -190,7 +191,7 @@ function optimiseForCargoOrder() {
     let fuselageTitle = document.getElementById("fuselage-title");
     let fuselageContainer = document.getElementById("fuselage-container");
     fuselageTitle.className = "visible";
-    fuselageContainer.className = "fuselage-container visible";
+    fuselageContainer.className = "fuselage-container";
     let calculatingDiv = document.getElementById("calculating-message-ordering");
     calculatingDiv.innerHTML = "Please wait whilst order is optimised for minimum turning effect around centre...";
     stepTwo();
@@ -199,7 +200,7 @@ function optimiseForCargoOrder() {
 
 function optimiseForLoadedCargoQUBO() {
     let calculatingDiv = document.getElementById("calculating-message-loading-qubo");
-    calculatingDiv.innerHTML = "Please wait whilst cargo selection is optimised for maximum load using QUBO...";
+    calculatingDiv.innerHTML = "Please wait whilst cargo selection is optimised for maximum load using simulated annealing...";
     stepOneQUBO();
 }
 

@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, jsonify, request, session
 from app.blocks import Block, BlockList
-from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks
+from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks, QuboParametersForm
 from app.lp import cargo_loading, cargo_ordering
 from app.qubo import CargoQubo
 
@@ -25,6 +25,7 @@ harder_test_blocks = [(1.0, 500), (1.0, 600), (1.0, 400), (0.5, 500), (0.5, 500)
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 400), (0.5, 100),
                       (2.0, 900), (2.0, 800), (2.0, 1200), (2.0, 1000)]
 
+default_penalty = 3
 
 @app.route('/', methods=['GET'])
 def index():
@@ -32,13 +33,20 @@ def index():
     cargo_form = CargoBlockForm()    
     remove_form = RemoveCargoBlockForm()
     params_form = ChangeParamsForm()
+    qubo_form = QuboParametersForm()
     session['step_one'] = BlockList([]).to_json()
     session['fuselage_length'] = 20
     session['max_load'] = 40000
-    session['penalty'] = 1000
+    session['penalty'] = default_penalty
     session['messages'] = []
     session.modified = True
-    return render_template('index.html', samples_form=samples_form, cargo_form=cargo_form, remove_form=remove_form, params_form=params_form)
+    return render_template('index.html', 
+                           samples_form=samples_form, 
+                           cargo_form=cargo_form, 
+                           remove_form=remove_form, 
+                           params_form=params_form,
+                           qubo_form = qubo_form,
+                           penalty=default_penalty)
 
 
 @app.route('/messages', methods=['GET'])
@@ -148,6 +156,18 @@ def params_form():
     return jsonify({'params_form_update': 0})
 
 
+@app.route('/forms/qubo', methods=['GET', 'POST'])
+def qubo_form():
+    form = QuboParametersForm()
+    if form.validate_on_submit():
+        if float(form.penalty.data) > 0:
+            session['penalty'] = float(form.penalty.data)
+            session['messages'].append(f'Changed QUBO penalty to {form.penalty.data}')
+        session.modified = True
+        return jsonify({'qubo_form_update': 1})
+    return jsonify({'qubo_form_update': 0})
+
+
 @app.route('/step-one/optimisation', methods=['GET'])
 def step_one_optimisation():
     blocks = BlockList(session['step_one'], as_json=True)
@@ -184,7 +204,7 @@ def generate_qubo_objective():
         'penalty'           : session['penalty']
     }
     qubo = CargoQubo(params)
-    qubo.solver(ising=True)
+    qubo.dimod_solver()
     session['qubo'] = qubo.solution_json()
     qubo.to_json()
     return jsonify(qubo.solution_json())

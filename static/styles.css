@@ -1,6 +1,10 @@
 body {
     font-family: 'Barlow', sans-serif;
-    margin: 10px 20%;
+    margin: 10px 22%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto Mono', monospace;
 }
 
 form {
@@ -120,6 +124,7 @@ form fieldset li {
 .fuselage-container {
     padding: 5px 0px;
     clear: both;    
+    width: 100%;
     overflow-x: auto;
 }
 

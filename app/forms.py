@@ -21,3 +21,7 @@ class UseSampleBlocks(FlaskForm):
     sample_blocks = BooleanField('Load sample blocks and fuselage parameters')
     simple_test_blocks = BooleanField('Load simple test blocks and fuselage parameters')
     harder_test_blocks = BooleanField('Load harder test blocks and fuselage parameters')
+
+
+class QuboParametersForm(FlaskForm):
+    penalty = DecimalField('Change penalty for QUBO')

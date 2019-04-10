@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Aircraft Loading Optimisation</title>
-        <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Barlow|Roboto+Mono|Roboto+Slab" rel="stylesheet"> 
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
@@ -16,7 +16,7 @@
     </head>
 <body>
     <h1>Airbus Quantum Computing Challenge</h1>
-    <button id="btn-info-display" class="btn-info-display" onclick="showOrHideInfo(this)">Display introduction</button>
+    <button id="btn-info-display" class="btn-info-display" onclick="showOrHideInfo(this, 'description', 'introduction')">Display introduction</button>
     <div id="description" style="display: none;">
         {% include "_description.html" %}
     </div>
@@ -84,7 +84,7 @@
     </div>
     <div class="step-fuselage">
         <h3 id="fuselage-title" class="hidden">Fuselage</h3>
-        <div id="fuselage-container" class="fuselage-container hidden">
+        <div id="fuselage-container" class="hidden">
             <table id="fuselage-table" class="fuselage-table">
                 <tr id="fuselage-numbering" class="fuselage-numbering">
                 </tr>
@@ -94,8 +94,24 @@
         </div>
     </div>
     <div class="qubo">
-        <h2>Quantum Unconstrained Binary Optimisation</h2>
-        {% include "_qubo.html" %}
+        <h1>Quantum Unconstrained Binary Optimisation</h1>
+        <button id="btn-info-display" class="btn-info-display" onclick="showOrHideInfo(this, 'qubo-intro', 'QUBO intro')">Display QUBO intro</button>
+        <div id="qubo-intro" style="display: none;">
+            {% include "_qubo.html" %}
+        </div>
+        <form enctype="multipart/form-data" method="POST" id="qubo-form">
+            <fieldset>
+                <legend><b>Change QUBO parameters</b></legend>
+                {{ qubo_form.csrf_token }}
+                <ul>
+                    <li>{{ qubo_form.penalty.label }} {{ qubo_form.penalty(size=10) }}</li>  
+                    <li style="font-size: 80%; margin: 4px 0px 3px 0px;">Note: The current default value for the penalty is {{ penalty }}</li>
+                </ul>         
+            </fieldset>
+        </form>
+        <button class="btn-calculate" onclick="validateQUBOForm()">Update QUBO parameters</button>
+        <ul id="flashed-messages-qubo">    
+        </ul>
         <h2>Step 1: List of cargos in optimal solution with QUBO</h2>
         <button class="btn-calculate" onclick="optimiseForLoadedCargoQUBO()">Find optimal order with QUBO</button>
         <h4 id="calculating-message-loading-qubo" class="calculating-message"></h4>
