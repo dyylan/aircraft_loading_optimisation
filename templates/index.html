@@ -21,17 +21,16 @@
         {% include "_description.html" %}
     </div>
     <h4>Note: Currently the solver does not work with IE or Edge.</h4>
-    <form enctype="multipart/form-data" method="POST" id="samples-form">
+    <form enctype="multipart/form-data" method="POST" id="sample-list-form">
         <fieldset>
             <legend><b>Use sample blocks and parameters</b></legend>
-            {{ samples_form.csrf_token }}
+            {{ sample_list_form.csrf_token }}
             <ul>
-                <li>{{ samples_form.sample_blocks.label }} {{ samples_form.sample_blocks }}</li>
-                <li>{{ samples_form.simple_test_blocks.label }} {{ samples_form.simple_test_blocks }}</li>
-                <li>{{ samples_form.harder_test_blocks.label }} {{ samples_form.harder_test_blocks }}</li>
-            </ul>   
+                <li>{{ sample_list_form.sample_blocks.label }} {{ sample_list_form.sample_blocks }}</li>
+            </ul>     
         </fieldset>
-    </form>   
+    </form>               
+    <button class="btn-calculate" onclick="validateSampleBlocksForm()">Load sample cargo blocks</button>
     <form enctype="multipart/form-data" method="POST" id="cargo-form">
         <fieldset>
             <legend><b>Add a cargo block</b></legend>

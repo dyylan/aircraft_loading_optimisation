@@ -1,7 +1,8 @@
 import os
 from flask import Flask, render_template, jsonify, request, session
 from app.blocks import Block, BlockList
-from app.forms import CargoBlockForm, RemoveCargoBlockForm, ChangeParamsForm, UseSampleBlocks, QuboParametersForm
+from app.forms import (CargoBlockForm, RemoveCargoBlockForm, 
+                      ChangeParamsForm, SelectSampleBlocks, QuboParametersForm)
 from app.lp import cargo_loading, cargo_ordering
 from app.qubo import CargoQubo
 
@@ -25,11 +26,11 @@ harder_test_blocks = [(1.0, 500), (1.0, 600), (1.0, 400), (0.5, 500), (0.5, 500)
                       (1.0, 500), (1.0, 600), (1.0, 400), (0.5, 400), (0.5, 100),
                       (2.0, 900), (2.0, 800), (2.0, 1200), (2.0, 1000)]
 
-default_penalty = 3
+default_penalty = 10
 
 @app.route('/', methods=['GET'])
 def index():
-    samples_form = UseSampleBlocks()
+    sample_list_form = SelectSampleBlocks()
     cargo_form = CargoBlockForm()    
     remove_form = RemoveCargoBlockForm()
     params_form = ChangeParamsForm()
@@ -41,7 +42,7 @@ def index():
     session['messages'] = []
     session.modified = True
     return render_template('index.html', 
-                           samples_form=samples_form, 
+                           sample_list_form=sample_list_form,
                            cargo_form=cargo_form, 
                            remove_form=remove_form, 
                            params_form=params_form,
@@ -76,30 +77,26 @@ def step_two_blocks():
     return jsonify(session['step_two'])
 
 
-@app.route('/forms/samples', methods=['GET', 'POST'])
-def samples_form():
-    form = UseSampleBlocks()
+@app.route('/forms/sample-list', methods=['GET', 'POST'])
+def sample_list_form():
+    form = SelectSampleBlocks()
     sample = form.sample_blocks.data
-    simple = form.simple_test_blocks.data
-    harder = form.harder_test_blocks.data
     if form.validate_on_submit():        
-        if not sample and not simple and not harder:
-            return jsonify({'samples_form_update': 0})
-        if sample:
+        if sample == 'sample':
             session['step_one'] = BlockList(sample_blocks).to_json()
             session['fuselage_length'] = 20
             session['max_load'] = 40000
             session['messages'].extend([f'Sample problem blocks loaded',
                                         f'Changed fuselage length to {session["fuselage_length"]}',
                                         f'Changed max load to {session["max_load"]}'])
-        if simple:
+        if sample == 'simple':
             session['step_one'] = BlockList(simple_test_blocks).to_json()
             session['fuselage_length'] = 3
             session['max_load'] = 2000
             session['messages'].extend([f'Test blocks loaded',
                                         f'Changed fuselage length to {session["fuselage_length"]}',
                                         f'Changed max load to {session["max_load"]}'])
-        if harder:
+        if sample == 'harder':
             session['step_one'] = BlockList(harder_test_blocks).to_json()
             session['fuselage_length'] = 8
             session['max_load'] = 7000

@@ -15,13 +15,12 @@ class RemoveCargoBlockForm(FlaskForm):
 class ChangeParamsForm(FlaskForm):
     fuselage_length = IntegerField('Change fuselage length')
     max_load = DecimalField('Change maximum load')
+    
 
-
-class UseSampleBlocks(FlaskForm):
-    sample_blocks = BooleanField('Load sample blocks and fuselage parameters')
-    simple_test_blocks = BooleanField('Load simple test blocks and fuselage parameters')
-    harder_test_blocks = BooleanField('Load harder test blocks and fuselage parameters')
-
+class SelectSampleBlocks(FlaskForm):
+    sample_blocks = SelectField('Blocks', choices=[('sample', 'Load sample blocks and fuselage parameters'),
+                                                          ('simple', 'Load simple test blocks and fuselage parameters'),
+                                                          ('harder', 'Load harder test blocks and fuselage parameters')])
 
 class QuboParametersForm(FlaskForm):
     penalty = DecimalField('Change penalty for QUBO')

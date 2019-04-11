@@ -62,6 +62,13 @@ function resetBlocks() {
     fuselageNumberingDiv.innerHTML = "";
 }
 
+async function validateSampleBlocksForm() {
+    await resetMessages();
+    await sendForm("sample-list-form", "/forms/sample-list");
+    reloadMessages("flashed-messages");
+    resetBlocks()
+    loadBlocks();
+}
 
 async function validateForms() {
     await resetMessages();

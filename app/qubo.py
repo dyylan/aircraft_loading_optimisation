@@ -159,7 +159,7 @@ class CargoQubo:
     def qbsolv_solver(self, ising=True):
         """ qbsolv is for breaking up large optmisation problems into smaller
             ones for the D-Wave machines. 
-            Is not properly implemented yet.
+            This function has not been properly implemented yet.
         """
         if ising:
             response = QBSolv().sample_ising(self.h, self.j) 
@@ -185,7 +185,7 @@ class CargoQubo:
 
     @staticmethod
     def num_slack_vars(x):
-        return int(np.log2(x)-1)  
+        return int(np.log2(x))  
  
     @staticmethod
     def to_jsonable(tuple_dict):
@@ -193,8 +193,10 @@ class CargoQubo:
 
     @staticmethod
     def from_jsonable(str_dict):
+        """ Not properly implemented yet """
         tuple_dict = {tuple([int(i) for i in k[1:-1].split(',')]) : v for k, v in str_dict.items()}
-
+        return tuple_dict
+        
     def _generate_slack_vars(self, name, max_value, norm):
         slacks = {f'slack_{name}{i+1}': f'x{self.num_vars+1+i}' for i in range(self.num_slack_vars(max_value))}    
         self.vars.update(slacks)

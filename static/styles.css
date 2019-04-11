@@ -34,7 +34,7 @@ form fieldset li {
     padding: 2px 2px;
     margin: 4px 2px;
     text-align: center;
-    font-size: 102%;
+    font-size: 100%;
     color: black;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0px 0px 1px 0px;
@@ -50,17 +50,18 @@ form fieldset li {
 }
 
 .btn-calculate {
-    padding: 8px 22px;
+    padding: 6px 18px;
     margin: 4px 2px;
     text-align: center;
-    font-size: 102%;
-    color: black;
+    font-size: 100%;
+    color: rgba(0,0,0,0.8);
     background-color: rgba(0, 0, 0, 0.02);
     border: 1px solid  rgba(0, 0, 0, 0.4);
 }
 
 .btn-calculate:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    color: rgba(0,0,0,0.9);
+    background-color: rgba(0, 0, 255, 0.1);
     border: 1px solid  rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: 0.3s;
